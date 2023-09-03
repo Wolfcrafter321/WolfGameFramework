@@ -11,9 +11,10 @@
     "timeline",
     "tools"
   ],
-  "description": "Use Unity Timeline to create cinematic content, game-play sequences, audio sequences, and complex particle effects.",
+  "description": "An Game Framework by Wolfy !\nEverything can create with this !",
   "documentationUrl": "http://wolft.starfree.jp",
   "repository": {
     "url": "https://github.com/Wolfcrafter321/WolfGameFramework",
-    "type": "git"}
+    "type": "git"
+  }
 }
