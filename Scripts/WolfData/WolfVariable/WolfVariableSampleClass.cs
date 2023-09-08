@@ -8,11 +8,12 @@ using UnityEngine.UIElements;
 namespace Wolf
 {
     [System.Serializable]
-    public class WolfVariableSampleClass : ScriptableObject
+    public class WolfVariableSampleClass : WolfVariableBase
     {
-        public new string name = "Item";
-        public string itemName;
-        public int itemCount;
+        public int itemMaxCount = 64;
+        public int healPower = 30;
+        public int value = 100;
+        public int sell = 20;
     }
 #if UNITY_EDITOR
     [CustomEditor(typeof(WolfVariableSampleClass))]

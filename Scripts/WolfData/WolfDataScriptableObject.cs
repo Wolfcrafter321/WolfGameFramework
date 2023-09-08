@@ -17,8 +17,10 @@ namespace Wolf
         public string dataName;
         public bool isSaveable;
 
-        public List<object> datas;
-        //public Dictionary<string, object> datas;
+        [SerializeField]
+        public List< WolfVariableBase> datas;
+        //public Dictionary<string, WolfVariableBase> datas;
+
 
         void ToSaveableData()
         {
@@ -34,44 +36,50 @@ namespace Wolf
         WolfDataScriptableObject data;
 
 
-
         public override void OnInspectorGUI()
         {
             data = (WolfDataScriptableObject)target;
 
-            if (data.datas == null) data.datas = new List<object>();
-            //if(data.datas == null) data.datas = new Dictionary<string, object>();
+            //if (data.datas == null) data.datas = new Dictionary<string, WolfVariableBase>();
+            if (data.datas == null) data.datas = new List<WolfVariableBase>();
 
             base.OnInspectorGUI();
 
+            //var keys = new List<string>(data.datas.Keys);
+            //var vals = new List<WolfVariableBase>(data.datas.Values);
+
+
+
+            if (GUILayout.Button("Add Base"))
+            {
+                data.datas.Add(new WolfVariableBase());
+            };
+            if (GUILayout.Button("Add Sample"))
+            {
+                data.datas.Add(new WolfVariableSampleClass());
+            };
+            if (GUILayout.Button("Reset"))
+            {
+                data.datas = new List<WolfVariableBase>();
+            };
+
+            EditorGUILayout.LabelField("fwhfhreuif");
             for (int i = 0; i < data.datas.Count; i++)
             //foreach (var key in data.datas.Keys)
             {
                 EditorGUILayout.BeginHorizontal();
-                //data.datas[key] = EditorGUILayout.ObjectField(data.datas[key] as UnityEngine.Object, typeof(ScriptableObject)) as UnityEngine.Object;
-                //data.datas[i] = EditorGUILayout.PropertyField(data.datas[i]);
+                EditorGUILayout.LabelField("aa");
                 EditorGUILayout.EndHorizontal();
             }
+            EditorGUILayout.LabelField("fwhfhreuif");
 
-            if (GUILayout.Button("Add Base"))
-            {
-                var v = ScriptableObject.CreateInstance<WolfVariableBase>();
-                AddToSubAssetAndVariable(v);
-            };
-            if (GUILayout.Button("Add Sample"))
-            {
-                var v = ScriptableObject.CreateInstance<WolfVariableSampleClass>();
-                AddToSubAssetAndVariable(v);
-            };
+
         }
 
-        void AddToSubAssetAndVariable(UnityEngine.Object v)
+        void AddToSubAssetAndVariable(WolfVariableBase v)
         {
-            v.name = GUID.Generate().ToString();
+            //data.datas.Add(v.name, v);
             data.datas.Add(v);
-            AssetDatabase.AddObjectToAsset(v, data);
-            AssetDatabase.SaveAssets();
-            AssetDatabase.Refresh();
         }
     }
 #endif
