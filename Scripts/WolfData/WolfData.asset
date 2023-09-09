@@ -14,4 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dataName: 
   isSaveable: 0
-  datas: []
+  datas:
+  - displayName: var
+  - displayName: var
+  - displayName: var
+  - displayName: var
