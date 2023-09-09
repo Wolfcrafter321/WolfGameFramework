@@ -16,8 +16,5 @@
   "repository": {
     "url": "https://github.com/Wolfcrafter321/WolfGameFramework",
     "type": "git"
-  },
-  "dependencies": {
-    "com.unity.netcode.gameobjects": "1.4.0"
   }
 }
