@@ -18,6 +18,7 @@
     "type": "git"
   },
   "dependencies": {
-    "com.unity.netcode.gameobjects": "1.4.0"
+    "com.unity.netcode.gameobjects": "1.4.0",
+    "com.unity.2d.sprite": "1.0.0"
   }
 }
