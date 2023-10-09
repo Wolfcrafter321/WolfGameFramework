@@ -5,21 +5,18 @@ using UnityEngine;
 namespace Wolf
 {
     [System.Serializable]
-    public class WolfEventBase
+    public class WolfEventBase : ScriptableObject
     {
 
-        public int targetEvent;
+        public int targetEvent = -1;
 
         [Header("node")]
         public float nodeX = 0;
         public float nodeY = 0;
 
-        public string text;
-
         public virtual IEnumerator ProcessEvent(WolfEventSO source)
         {
-            Debug.Log("これはデバッグテキストです。：" + text);
-
+            Debug.Log("hi this is event. next is " + targetEvent);
             // throw new System.NotImplementedException();
             if(targetEvent == -1)
                 source.nextEvent = null;

@@ -14,11 +14,12 @@ namespace Wolf
 
         public List<WolfEventSO> wolfEventSOs;
 
+        public WolfEventPrint pr;
+
         [ContextMenu("Hi")]
         void Test()
         {
-            Debug.Log("テストです。イベントパックの[0]を実行します。");
-            wolfEventSOs[0].StartEvent(this);
+            if(wolfEventSOs != null) wolfEventSOs[0].StartEvent(this);
         }
 
     }
@@ -39,20 +40,39 @@ namespace Wolf
             if (GUILayout.Button("CreateEventSO"))
             {
                 targ.wolfEventSOs = new List<WolfEventSO>();
-                var newSO = ScriptableObject.CreateInstance<WolfEventSO>();
+                var newSO = ScriptableObject.CreateInstance<WolfEventSO>();     // ToDo: エディター上の新規作成はシリアライズの問題か、上手くいかない。
                 newSO.name = "MyEvents1";
-                newSO.wolfEvents = new List<WolfEventBase>();
-                newSO.wolfEvents.Add(new WolfEventBase());
-                newSO.wolfEvents.Add(new WolfEventPrint());
-                newSO.wolfEvents.Add(new WolfEventBase());
-                newSO.wolfEvents[0].text = "A";
-                newSO.wolfEvents[0].targetEvent = 2;
-                newSO.wolfEvents[1].text = "C";
-                newSO.wolfEvents[1].targetEvent = -1;
-                newSO.wolfEvents[2].text = "B";
-                newSO.wolfEvents[2].targetEvent = 1;
+                newSO.wolfEvents = new List<WolfEventBase>();                   // 実行時に新規作成すれば問題ないが、それではエディタ上での保存ができない。
+                var A = CreateInstance<WolfEventBase>();
+                var B = CreateInstance<WolfEventPrint>();
+                var C = CreateInstance<WolfEventBase>();
+                var D = CreateInstance<WolfEventVariableString>();
+                var E = CreateInstance<WolfEventDebugLog>();
+                A.targetEvent = 2;
+                B.targetEvent = -1;
+                C.targetEvent = 4;
+                D.targetEvent = -1;
+                E.targetEvent = 1;
+                B.count = 10;
+                B.text_test = new WolfEventConnectableVariable<string>();
+                B.text_test.Init(newSO, "", 3);
+                B.text_test.sourceTarget = 3;
+                D.value = "Test Success!";
+                E.text = "Please!";
+                newSO.wolfEvents.Add(A);
+                newSO.wolfEvents.Add(B);
+                newSO.wolfEvents.Add(C);
+                newSO.wolfEvents.Add(D);
+                newSO.wolfEvents.Add(E);
                 targ.wolfEventSOs.Add(newSO);
             }
+
+            if (GUILayout.Button("Open Editor Window", GUILayout.Height(29) ))
+            {
+                WolfEventGraphWindow.OpenWolfEventGraphWindow();
+            }
+
+            serializedObject.ApplyModifiedProperties();
         }
     }
 #endif
