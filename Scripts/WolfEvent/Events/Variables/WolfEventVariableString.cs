@@ -8,6 +8,8 @@ namespace Wolf
     {
         public string value;
 
+        public static new string searchTreePath = "Variables/String";
+
         public override IEnumerator ProcessEvent(WolfEventSO source)
         {
             return base.ProcessEvent(source);

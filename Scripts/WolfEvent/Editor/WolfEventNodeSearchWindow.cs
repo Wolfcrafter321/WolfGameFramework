@@ -1,3 +1,4 @@
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -22,12 +23,33 @@ namespace Wolf
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
-            var tree = new List<SearchTreeEntry>
-            {
-                new SearchTreeGroupEntry(new GUIContent(text:"New EventNode"), level:0),
-                new SearchTreeGroupEntry(new GUIContent(text:"Test"), level:1),
-                new SearchTreeEntry(new GUIContent(text:"Testo!")){userData = typeof(EventNode), level = 2}     // ToDo:自動で検索できないか？。
-            };
+            var tree = new List<SearchTreeEntry>{ new SearchTreeGroupEntry(new GUIContent(text:"New EventNode"), level:0) };
+
+            List<string> pathes = new List<string>();
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())
+                if (type.BaseType == typeof(WolfEventBase))
+                {
+                    var pathProperty = type.GetField("searchTreePath");
+                    var path = (string)pathProperty.GetValue(type);
+
+                    var splitted = path.Split("/");
+                    for (int i = 0; i < splitted.Length; i++)
+                    {
+                        if (i == splitted.Length - 1)
+                        {
+                            var ste = new SearchTreeEntry(new GUIContent(text: splitted[i]));       // ToDo: 現状、同じ階層を正しく処理していない
+                            ste.level = i + 1;
+                            ste.userData = type;
+                            tree.Add(ste);
+                        }
+                        else
+                        {
+                            var stge = new SearchTreeGroupEntry(new GUIContent(text: splitted[i]), level: i + 1);
+                            tree.Add(stge);
+                        }
+                    }
+                }
+
             return tree;
             // throw new System.NotImplementedException();
         }
@@ -36,10 +58,16 @@ namespace Wolf
         {
             var position = context.screenMousePosition - wew.position.position;
 
+            Debug.Log(searchTreeEntry.userData);
+            //var t = searchTreeEntry.userData.GetType();
+            //var m = t.GetMethod("GetNodeCreationInfo");               // ここを、ノードさくせい（）を作って、タイプ内部のフィールドを回せないか？
+            //Debug.Log(m.Invoke(searchTreeEntry.userData, null));
+            
+
             switch (searchTreeEntry.userData)
             {
-                case Wolf.EventNode:
-                        Debug.Log(searchTreeEntry.userData + " " + context + "afddfsasdfsfdfs ");
+                case Wolf.WolfEventBase a:
+                    Debug.Log(searchTreeEntry.userData + " " + context + "afddfsasdfsfdfs ");
                     break;
                 default:
                     Debug.Log(searchTreeEntry.userData + " " + context + " ");

@@ -9,6 +9,8 @@ namespace Wolf
         public GameObject target;
         public WolfEventConnectableVariable<string> message;
 
+        public static new string searchTreePath = "Unity/SendMessage";
+
         public override IEnumerator ProcessEvent(WolfEventSO source)
         {
             target.SendMessage(message.value);

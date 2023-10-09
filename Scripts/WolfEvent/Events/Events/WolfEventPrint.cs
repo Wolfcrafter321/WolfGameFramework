@@ -11,6 +11,8 @@ namespace Wolf
         public WolfEventConnectableVariable<string> text_test;
         public int count = 3;
 
+        public static new string searchTreePath = "Debug/Print";
+
         public override IEnumerator ProcessEvent(WolfEventSO source)
         {
             for (int i = 0; i < count; i++)
@@ -24,7 +26,7 @@ namespace Wolf
             else
                 source.nextEvent = source.wolfEvents[targetEvent];
             yield return null;
-            // yield return base.ProcessEvent(source);
+            yield return base.ProcessEvent(source);
         }
 
     }

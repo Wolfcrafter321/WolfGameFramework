@@ -23,15 +23,25 @@ namespace Wolf
             this.AddManipulator(new RectangleSelector());
 
             var minimap = new MiniMap();
-            minimap.SetPosition(new Rect(10, 30, 200, 200));
-            minimap.anchored = true;
+            minimap.SetPosition(new Rect(10, 30, 100, 100));
             Add(minimap);
 
             searchWindow = ScriptableObject.CreateInstance<WolfEventNodeSearchWindow>();
             nodeCreationRequest = context =>
                 SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
             searchWindow.Init(window, this);
-            
+        }
+
+        public void LoadEvents(WolfEventManager wManager)
+        {
+            Debug.Log(wManager);
+            Debug.Log("view Load!");
+        }
+
+        public void SaveEvents(WolfEventManager wManager)
+        {
+            Debug.Log(wManager);
+            Debug.Log("view Save!");
         }
     }
 }

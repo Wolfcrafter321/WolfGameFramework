@@ -69,7 +69,7 @@ namespace Wolf
 
             if (GUILayout.Button("Open Editor Window", GUILayout.Height(29) ))
             {
-                WolfEventGraphWindow.OpenWolfEventGraphWindow();
+                var w = WolfEventGraphWindow.OpenWolfEventGraphWindow();
             }
 
             serializedObject.ApplyModifiedProperties();

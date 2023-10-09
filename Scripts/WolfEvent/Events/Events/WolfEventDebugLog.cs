@@ -6,7 +6,7 @@ namespace Wolf
 {
     public class WolfEventDebugLog : WolfEventBase
     {
-
+        public static new string searchTreePath = "Debug/DebugLog";
         public string text;
 
         public override IEnumerator ProcessEvent(WolfEventSO source)
