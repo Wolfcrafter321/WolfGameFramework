@@ -14,8 +14,6 @@ namespace Wolf
 
         public List<WolfEventSO> wolfEventSOs;
 
-        public WolfEventPrint pr;
-
         [ContextMenu("Hi")]
         void Test()
         {

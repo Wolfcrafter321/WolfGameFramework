@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace Wolf
 {
-    [System.Serializable]
+    [System.Serializable, Node]
     public class WolfEventPrint : WolfEventBase
     {
-        public string text;
-        public WolfEventConnectableVariable<string> text_test;
-        public int count = 3;
+        [NodeField]public int count = 3;
+        [NodeField]public string text;
+        [NodeConnectableField] public WolfEventConnectableVariable<string> text_test;
 
         public static new string searchTreePath = "Debug/Print";
 

@@ -13,7 +13,7 @@ namespace Wolf
     {
         public WolfEventGraphView view;
 
-        [MenuItem("Wolf/W/o/l/f/WolfEventGraphWindow")]
+        [MenuItem("Wolf/WolfEventGraphWindow")]
         public static WolfEventGraphWindow OpenWolfEventGraphWindow()
         {
             var window = GetWindow<WolfEventGraphWindow>();
@@ -44,9 +44,11 @@ namespace Wolf
             var tb = new Toolbar();
 
             var btn1 = new ToolbarButton(clickEvent: () => { SaveEvents(); }){ text = "Save", tooltip = "Save nodes to selected object."};
-            var btn2 = new ToolbarButton(clickEvent: () => { LoadEvents(); }){ text = "Load", tooltip = "Load nodes from selected object." };
+            var btn2 = new ToolbarButton(clickEvent: () => { LoadEvents(); }) { text = "Load", tooltip = "Load nodes from selected object." };
+            var btn3 = new ToolbarButton(clickEvent: () => { view.TestEvents(); }) { text = "TEST"};
             tb.Add(btn1);
             tb.Add(btn2);
+            tb.Add(btn3);
             rootVisualElement.Add(tb);
 
         }
@@ -55,8 +57,6 @@ namespace Wolf
         {
             var target = GetWolfEventManagerFromSceneSelectedObject();
             Debug.Log("Save!"); if (view != null && target != null) view.SaveEvents(target);
-
-            
         }
         
         void LoadEvents()
@@ -68,7 +68,7 @@ namespace Wolf
         WolfEventManager GetWolfEventManagerFromSceneSelectedObject()
         {
             WolfEventManager target = null;
-            if(Selection.count >= 1) Selection.activeTransform.gameObject.TryGetComponent<WolfEventManager>(out target);
+            if(Selection.count == 1) Selection.activeTransform.gameObject.TryGetComponent<WolfEventManager>(out target);
             return target;
         }
 

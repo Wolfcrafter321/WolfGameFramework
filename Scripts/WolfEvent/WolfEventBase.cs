@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,7 +11,7 @@ namespace Wolf
     /// かならず記述してください。
     /// 現在ノード作成時のフィールドを自動でできないか開発中。
     /// </summary>
-    [System.Serializable]
+    [System.Serializable, Node]
     public class WolfEventBase : ScriptableObject
     {
 
@@ -38,15 +39,27 @@ namespace Wolf
                 source.nextEvent = source.wolfEvents[targetEvent];
             yield return null;
         }
-
-        /// <summary>
-        /// ノード作成時の挙動を描きます。 　Reflectionでクラスのフィールドの型とかを取得して、自動でノードのプロパティ部品を作れないか？
-        /// </summary>
-        /// <returns></returns>
-        public virtual object GetNodeCreationInfo()
-        {
-            return "Hi!";
-        }
-
     }
+
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)]public class NodeAttribute : System.Attribute { }
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class FunctionNodeAttribute : System.Attribute { }
+    [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class VariableNodeAttribute : System.Attribute { }
+    [AttributeUsage(AttributeTargets.Field)] public class NodeConnectableFieldAttribute : System.Attribute { }
+    [AttributeUsage(AttributeTargets.Field)] public class NodeFieldAttribute : System.Attribute { }
+
+    [AttributeUsage(AttributeTargets.Field)]public class InputPortAttribute : System.Attribute{}
+    [AttributeUsage(AttributeTargets.Field)]public class OutputPortAttribute : System.Attribute{ }
+
+    public static class WolfEventNodeAttributeNames
+    {
+        public const string NodeAttribute                   = "Wolf." + "NodeAttribute";
+        public const string FunctionNodeAttribute           = "Wolf." + "FunctionNodeAttribute";
+        public const string VariableNodeAttribute           = "Wolf." + "VariableNodeAttribute";
+        public const string NodeConnectableFieldAttribute   = "Wolf." + "NodeConnectableFieldAttribute";
+        public const string NodeFieldAttribute              = "Wolf." + "NodeFieldAttribute";
+
+        public const string InputPortAttribute              = "Wolf." + "InputPortAttribute";
+        public const string OutputPortAttribute             = "Wolf." + "OutputPortAttribute";
+    }
+
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
@@ -56,25 +57,76 @@ namespace Wolf
 
         public bool OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
+            Debug.Log(searchTreeEntry.userData);
             var position = context.screenMousePosition - wew.position.position;
 
-            Debug.Log(searchTreeEntry.userData);
-            //var t = searchTreeEntry.userData.GetType();
-            //var m = t.GetMethod("GetNodeCreationInfo");               // ここを、ノードさくせい（）を作って、タイプ内部のフィールドを回せないか？
-            //Debug.Log(m.Invoke(searchTreeEntry.userData, null));
+            Node n = new Node();
             
-
-            switch (searchTreeEntry.userData)
+            n.title = searchTreeEntry.userData.ToString().Replace("Wolf.WolfEvent","");
+            n.SetPosition(new Rect(position, Vector2.one));
+            var type =  Type.GetType(searchTreeEntry.userData.ToString());
+            var fields = type.GetFields();
+            foreach (var attr in type.GetCustomAttributes())        // イベント接続のポート
             {
-                case Wolf.WolfEventBase a:
-                    Debug.Log(searchTreeEntry.userData + " " + context + "afddfsasdfsfdfs ");
+                Debug.Log(attr);
+                if (attr.ToString() == WolfEventNodeAttributeNames.FunctionNodeAttribute)
+                {
+                    var po = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(Node));
+                    po.portName = "Out";
+                    n.outputContainer.Add(po);
                     break;
-                default:
-                    Debug.Log(searchTreeEntry.userData + " " + context + " ");
+                }
+                if (attr.ToString() == WolfEventNodeAttributeNames.NodeAttribute)
+                {
+                    var pi = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Multi, typeof(Node));
+                    var po = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(Node));
+                    pi.portName = "In";
+                    po.portName = "Out";
+
+                    n.inputContainer.Add(pi);
+                    n.outputContainer.Add(po);
                     break;
+                }
             }
+            foreach (var field in fields)        // 変数接続のポート
+            {
+                foreach (var attr in field.GetCustomAttributes())
+                {
+                    if (attr.ToString() == WolfEventNodeAttributeNames.NodeConnectableFieldAttribute)
+                    {
+                        Debug.Log(attr);
+                        Debug.Log(field.FieldType.ToString());
+                        if (field.FieldType.ToString() == WolfEventNodeAttributeNames.NodeConnectableFieldAttribute)
+                        {
+                            n.mainContainer.Add(new TextField());
+                        }
+                        var pi = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(string));
+                        var po = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(string));
+                        n.inputContainer.Add(pi);
+                        n.outputContainer.Add(po);
+                    }
+                }
+            }
+            foreach (var field in fields)        // フィールド
+            {
+                //Debug.Log(member.Name + ": " + member.MemberType);
+                foreach (var attr in field.GetCustomAttributes())
+                {
+                    if (attr.ToString() == WolfEventNodeAttributeNames.NodeFieldAttribute)
+                    {
+                        Debug.Log(field.FieldType);
+
+                        if (field.FieldType.ToString() == "System.String")  n.mainContainer.Add(new TextField());
+                        if (field.FieldType.ToString() == "System.Int")     n.mainContainer.Add(new IntegerField());
+                        if (field.FieldType.ToString() == "System.Float")   n.mainContainer.Add(new FloatField());
+                    }
+                }
+            }
+            n.RefreshPorts();
+
+            wegv.AddElement(n);
+
             return true;
-            // throw new System.NotImplementedException();
         }
     }
 }
