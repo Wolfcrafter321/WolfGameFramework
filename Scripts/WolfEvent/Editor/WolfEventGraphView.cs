@@ -61,26 +61,49 @@ namespace Wolf
             //return base.GetCompatiblePorts(startPort, nodeAdapter);
         }
 
+        public void ClearEventNodes()
+        {
+            foreach (var node in nodes)
+            {
+                RemoveElement(node);
+            }
+        }
+
         /// <summary>
         /// 選択物からイベントノードを取得します。
         /// SOの場合は単品、コンポーネントの場合は複数のSOを取得。
         /// </summary>
         /// <param name="wManager"></param>
-        public void LoadEvents(WolfEventManager wManager)
+        public void LoadEvents(WolfEventSO so)
         {
-            Debug.Log(wManager);
+            Debug.Log(so);
             Debug.Log("view Load!");
+
+            //warn if editting
+
+
+            //clear
+            ClearEventNodes();
+
+            //create nodes
+            foreach (var wolfEvent in so.wolfEvents)
+            {
+                AddElement(WolfEventEditorUtil.CreateUIElementNode(wolfEvent));
+            }
+
+            //connect nodes
 
         }
 
-        public void SaveEvents(WolfEventManager wManager)
+        public void SaveEvents(WolfEventSO so)
         {
-            Debug.Log(wManager);
+            Debug.Log(so);
             Debug.Log("view Save!");
         }
 
         public void TestEvents()
         {
+            Debug.Log("test");
             ports.ForEach((port) => { Debug.Log(port); });
             
         }

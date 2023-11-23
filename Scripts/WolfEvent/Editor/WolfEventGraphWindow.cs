@@ -45,10 +45,12 @@ namespace Wolf
 
             var btn1 = new ToolbarButton(clickEvent: () => { SaveEvents(); }){ text = "Save", tooltip = "Save nodes to selected object."};
             var btn2 = new ToolbarButton(clickEvent: () => { LoadEvents(); }) { text = "Load", tooltip = "Load nodes from selected object." };
-            var btn3 = new ToolbarButton(clickEvent: () => { view.TestEvents(); }) { text = "TEST"};
+            var btn3 = new ToolbarButton(clickEvent: () => { view.ClearEventNodes(); }) { text = "Clear" };
+            var btn4 = new ToolbarButton(clickEvent: () => { view.TestEvents(); }) { text = "TEST" };
             tb.Add(btn1);
             tb.Add(btn2);
             tb.Add(btn3);
+            tb.Add(btn4);
             rootVisualElement.Add(tb);
 
         }
@@ -65,11 +67,11 @@ namespace Wolf
             Debug.Log("Load!"); if (view != null && target != null) view.LoadEvents(target);
         }
 
-        WolfEventManager GetWolfEventManagerFromSceneSelectedObject()
+        WolfEventSO GetWolfEventManagerFromSceneSelectedObject()        // ToDO: スクリプタブルオブジェクトに対応する
         {
             WolfEventManager target = null;
             if(Selection.count == 1) Selection.activeTransform.gameObject.TryGetComponent<WolfEventManager>(out target);
-            return target;
+            return target.wolfEventSOs[0];
         }
 
 

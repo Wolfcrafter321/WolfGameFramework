@@ -51,6 +51,16 @@ namespace Wolf
                 C.targetEvent = 4;
                 D.targetEvent = -1;
                 E.targetEvent = 1;
+                A.nodeX = UnityEngine.Random.Range(0, 800);
+                A.nodeY = UnityEngine.Random.Range(0, 800);
+                B.nodeX = UnityEngine.Random.Range(0, 800);
+                B.nodeY = UnityEngine.Random.Range(0, 800);
+                C.nodeX = UnityEngine.Random.Range(0, 800);
+                C.nodeY = UnityEngine.Random.Range(0, 800);
+                D.nodeX = UnityEngine.Random.Range(0, 800);
+                D.nodeY = UnityEngine.Random.Range(0, 800);
+                E.nodeX = UnityEngine.Random.Range(0, 800);
+                E.nodeY = UnityEngine.Random.Range(0, 800);
                 B.count = 10;
                 B.text_test = new WolfEventConnectableVariable<string>();
                 B.text_test.Init(newSO, "", 3);
