@@ -3,6 +3,7 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental;
@@ -69,3 +70,4 @@ namespace Wolf
         }
     }
 }
+#endif
