@@ -1,6 +1,9 @@
+using System;
+using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental;
@@ -22,12 +25,33 @@ namespace Wolf
 
         public List<SearchTreeEntry> CreateSearchTree(SearchWindowContext context)
         {
-            var tree = new List<SearchTreeEntry>
-            {
-                new SearchTreeGroupEntry(new GUIContent(text:"New EventNode"), level:0),
-                new SearchTreeGroupEntry(new GUIContent(text:"Test"), level:1),
-                new SearchTreeEntry(new GUIContent(text:"Testo!")){userData = typeof(EventNode), level = 2}     // ToDo:é©ìÆÇ≈åüçıÇ≈Ç´Ç»Ç¢Ç©ÅHÅB
-            };
+            var tree = new List<SearchTreeEntry>{ new SearchTreeGroupEntry(new GUIContent(text:"New EventNode"), level:0) };
+
+            List<string> pathes = new List<string>();
+            foreach (var type in Assembly.GetExecutingAssembly().GetTypes())    // getting all type ( inherit of WolfEventBase )
+                if (type.BaseType == typeof(WolfEventBase))
+                {
+                    var pathProperty = type.GetField("searchTreePath");
+                    var path = (string)pathProperty.GetValue(type);             // like "debug/log"
+
+                    var splitted = path.Split("/");
+                    for (int i = 0; i < splitted.Length; i++)
+                    {
+                        if (i == splitted.Length - 1)
+                        {
+                            var ste = new SearchTreeEntry(new GUIContent(text: splitted[i]));       // ToDo: åªèÛÅAìØÇ∂äKëwÇê≥ÇµÇ≠èàóùÇµÇƒÇ¢Ç»Ç¢
+                            ste.level = i + 1;
+                            ste.userData = type;
+                            tree.Add(ste);
+                        }
+                        else
+                        {
+                            var stge = new SearchTreeGroupEntry(new GUIContent(text: splitted[i]), level: i + 1);
+                            tree.Add(stge);
+                        }
+                    }
+                }
+
             return tree;
             // throw new System.NotImplementedException();
         }
@@ -36,17 +60,14 @@ namespace Wolf
         {
             var position = context.screenMousePosition - wew.position.position;
 
-            switch (searchTreeEntry.userData)
-            {
-                case Wolf.EventNode:
-                        Debug.Log(searchTreeEntry.userData + " " + context + "afddfsasdfsfdfs ");
-                    break;
-                default:
-                    Debug.Log(searchTreeEntry.userData + " " + context + " ");
-                    break;
-            }
+            var type =  Type.GetType(searchTreeEntry.userData.ToString());
+            Node n = WolfEventEditorUtil.CreateUIElementNode(type);
+            n.SetPosition(new Rect(position, Vector2.zero));
+
+            wegv.AddElement(n);
+
             return true;
-            // throw new System.NotImplementedException();
         }
     }
 }
+#endif

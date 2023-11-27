@@ -4,9 +4,12 @@ using UnityEngine;
 
 namespace Wolf
 {
+    [VariableNode]
     public class WolfEventVariableString : WolfEventBase, IWolfEventVariable
     {
-        public string value;
+        [NodeField]public string value;
+
+        public static new string searchTreePath = "Variables/String";
 
         public override IEnumerator ProcessEvent(WolfEventSO source)
         {

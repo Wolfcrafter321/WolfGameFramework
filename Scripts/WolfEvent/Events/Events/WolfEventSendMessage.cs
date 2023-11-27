@@ -4,10 +4,13 @@ using UnityEngine;
 
 namespace Wolf
 {
+    [Node]
     public class WolfEventSendMessage : WolfEventBase
     {
-        public GameObject target;
-        public WolfEventConnectableVariable<string> message;
+        [NodeField]public GameObject target;
+        [NodeConnectableField] public WolfEventConnectableVariable<string> message;
+
+        public static new string searchTreePath = "Unity/SendMessage";
 
         public override IEnumerator ProcessEvent(WolfEventSO source)
         {
