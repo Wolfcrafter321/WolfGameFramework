@@ -46,7 +46,7 @@ public class SunRotter : MonoBehaviour
                 if (currentRawTime > dayCycleTime) currentRawTime = 0;
                 currentRawTime += Time.deltaTime;
                 float X = (((currentRawTime) / dayCycleTime) * 360);
-                transform.eulerAngles = new Vector3(X, 0, 0);
+                transform.localEulerAngles = new Vector3(X, 0, 0);
                 lightSource.intensity = lightPowerCurve.Evaluate(X / 15);
                 RenderSettings.ambientIntensity = lightPowerCurve.Evaluate(X / 15);
                 lightSource.color = sunColorGradient.Evaluate((X / 360));
