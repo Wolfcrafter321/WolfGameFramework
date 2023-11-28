@@ -14,6 +14,7 @@
 using UnityEngine.Networking;
 using UnityEngine;
 
+[AddComponentMenu("Wolf/Manager/CursorManager")]
 public class CursorManager : MonoBehaviour
 {
 

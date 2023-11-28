@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props/simplerotation")]
 public class simplerotation : MonoBehaviour
 {
 

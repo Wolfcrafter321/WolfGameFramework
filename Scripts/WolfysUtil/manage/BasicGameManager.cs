@@ -4,11 +4,12 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 
-public class GameManager : MonoBehaviour
+[AddComponentMenu("Wolf/Manager/BasicGameManager")]
+public class BasicGameManager : MonoBehaviour
 {
 
     [SerializeField] bool useSingleton;
-    public static GameManager singleton;
+    public static BasicGameManager singleton;
     
     private void Awake()
     {

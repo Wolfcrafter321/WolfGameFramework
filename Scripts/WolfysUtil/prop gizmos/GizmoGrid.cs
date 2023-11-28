@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props Gizmos/GizmoGrid")]
 public class GizmoGrid : MonoBehaviour
 {
 

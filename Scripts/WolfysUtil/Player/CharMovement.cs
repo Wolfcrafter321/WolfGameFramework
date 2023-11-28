@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
+[AddComponentMenu("Wolf/Player/CharMovement")]
 public class CharMovement : MonoBehaviour
 {
     [Header("----------")]

@@ -5,6 +5,7 @@ using UnityEditor;
 #endif
 public enum GismoMode { None = 0, AlwaysVisible = 10, ShowOnlySelected = 20  }
 
+[AddComponentMenu("Wolf/Utils/Props/Duplicator")]
 public class Duplicator : MonoBehaviour
 {
 

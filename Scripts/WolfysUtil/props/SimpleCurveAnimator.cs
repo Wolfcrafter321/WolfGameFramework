@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props/SimpleCurveAnimator")]
 public class SimpleCurveAnimator : MonoBehaviour
 {
 
