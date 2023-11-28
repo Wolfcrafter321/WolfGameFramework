@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props/SunRotterCoroutine")]
 public class SunRotterCoroutine : MonoBehaviour
 {
 

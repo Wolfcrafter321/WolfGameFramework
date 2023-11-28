@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props/LerpTranformer")]
 public class LerpTranformer : MonoBehaviour
 {
 

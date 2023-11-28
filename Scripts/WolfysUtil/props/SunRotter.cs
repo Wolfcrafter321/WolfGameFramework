@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 
+[AddComponentMenu("Wolf/Utils/Props/SunRotter")]
 public class SunRotter : MonoBehaviour
 {
 

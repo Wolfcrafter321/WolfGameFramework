@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
+[AddComponentMenu("Wolf/Debug/SceneChangerDebug")]
 public class SceneChangerDebug : MonoBehaviour
 {
 
@@ -15,7 +16,7 @@ public class SceneChangerDebug : MonoBehaviour
             //if (GUI.Button(new Rect(20, 20 + i * 50, 150, 35), i.ToString(), style))
             if (GUI.Button(new Rect(20, 20 + i * 50, 150, 35), i.ToString()))
             {
-                GameManager.singleton.LoadScene(i);
+                BasicGameManager.singleton.LoadScene(i);
             }
         }
 

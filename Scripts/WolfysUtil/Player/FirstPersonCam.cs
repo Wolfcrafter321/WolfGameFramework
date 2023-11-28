@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Wolf/Player/FirstPersonCam")]
 public class FirstPersonCam : MonoBehaviour
 {
 

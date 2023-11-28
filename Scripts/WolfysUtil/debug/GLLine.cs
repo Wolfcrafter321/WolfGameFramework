@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[AddComponentMenu("Wolf/Debug/GLLine")]
 public class GLLine : MonoBehaviour
 {
 

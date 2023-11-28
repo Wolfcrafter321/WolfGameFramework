@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
+[AddComponentMenu("Wolf/Utils/Props/AudioSpectrumReceiver")]
 public class AudioSpectrumReceiver : MonoBehaviour
 {
 
