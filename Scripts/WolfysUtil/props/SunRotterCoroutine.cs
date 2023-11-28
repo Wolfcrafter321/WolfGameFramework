@@ -49,7 +49,7 @@ public class SunRotterCoroutine : MonoBehaviour
     void Rot()
     {
         sun.intensity = sunIntensity.Evaluate(current);
-        transform.eulerAngles = new Vector3(current, 0, 0);
+        transform.localEulerAngles = new Vector3(current, 0, 0);
     }
 
 }
