@@ -9,7 +9,10 @@ namespace Wolf
         public Transform target;
         void Update()
         {
-            transform.LookAt((target != null) ? target : Camera.current.transform);
+            Transform theTarget =
+                (target != null) ? target :
+                (Camera.current != null) ? Camera.current.transform : Camera.main.transform ;
+            if(theTarget != null) transform.LookAt(theTarget);
         }
     }
 }
