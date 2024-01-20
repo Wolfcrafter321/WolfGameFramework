@@ -1,6 +1,7 @@
 using System.IO;
-using UnityEditor;
 using UnityEngine;
+#if UNITY_EDITOR
+using UnityEditor;
 
 public class CreateAssetBundles : MonoBehaviour
 {
@@ -16,12 +17,13 @@ public class CreateAssetBundles : MonoBehaviour
         BuildAssetBundleOptions.None, EditorUserBuildSettings.activeBuildTarget);
     }
 }
+#endif
 
 /*
  * 
  * 
- * ƒAƒZƒbƒgƒoƒ“ƒhƒ‹‚ÆƒAƒZƒbƒg‚ğƒ[ƒh‚·‚é
-ƒ[ƒJƒ‹ ƒXƒgƒŒ[ƒW‚©‚çƒ[ƒh‚µ‚½‚¢ê‡‚ÍAˆÈ‰º‚Ì‚æ‚¤‚É AssetBundles.LoadFromFile API‚ğg—p‚µ‚Ü‚·B
+ * ï¿½Aï¿½Zï¿½bï¿½gï¿½oï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ÆƒAï¿½Zï¿½bï¿½gï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½
+ï¿½ï¿½ï¿½[ï¿½Jï¿½ï¿½ ï¿½Xï¿½gï¿½ï¿½ï¿½[ï¿½Wï¿½ï¿½ï¿½çƒï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍAï¿½È‰ï¿½ï¿½Ì‚æ‚¤ï¿½ï¿½ AssetBundles.LoadFromFile APIï¿½ï¿½ï¿½gï¿½pï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 
 public class LoadFromFileExample : MonoBehaviour {
     void Start() {
@@ -35,9 +37,9 @@ public class LoadFromFileExample : MonoBehaviour {
         Instantiate(prefab);
     }
 }
-LoadFromFile ‚Íƒoƒ“ƒhƒ‹ƒtƒ@ƒCƒ‹‚ÌƒpƒX‚ğ•K—v‚Æ‚µ‚Ü‚·B
+LoadFromFile ï¿½Íƒoï¿½ï¿½ï¿½hï¿½ï¿½ï¿½tï¿½@ï¿½Cï¿½ï¿½ï¿½Ìƒpï¿½Xï¿½ï¿½Kï¿½vï¿½Æ‚ï¿½ï¿½Ü‚ï¿½ï¿½B
 
-ƒAƒZƒbƒgƒoƒ“ƒhƒ‹‚ğ“Æ©‚ÉƒzƒXƒeƒBƒ“ƒO‚µ‚Ä‚¢‚ÄA‚»‚ê‚ğƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Éƒ_ƒEƒ“ƒ[ƒh‚·‚é•K—v‚ª‚ ‚éê‡‚ÍAUnityWebRequestAssetBundle API ‚ğg—p‚Å‚«‚Ü‚·BˆÈ‰º‚Í‚»‚Ìg—p—á‚Å‚·B
+ï¿½Aï¿½Zï¿½bï¿½gï¿½oï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½Æï¿½ï¿½Éƒzï¿½Xï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ÄAï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Éƒ_ï¿½Eï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½Kï¿½vï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ÍAUnityWebRequestAssetBundle API ï¿½ï¿½ï¿½gï¿½pï¿½Å‚ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½È‰ï¿½ï¿½Í‚ï¿½ï¿½Ìgï¿½pï¿½ï¿½Å‚ï¿½ï¿½B
 
 IEnumerator InstantiateObject()
 {
