@@ -1,0 +1,22 @@
+{
+  "name": "com.wolfcrafter321.wolf_game_framework",
+  "displayName": "WolfGameFramework",
+  "version": "0.0.0",
+  "unity": "6000.0",
+  "author": "Wolfcrafter321",
+  "keywords": [
+    "unity",
+    "editor",
+    "tools"
+  ],
+  "description": "An Game Framework by Wolfy !",
+  "documentationUrl": "http://wolfy.starfree.jp",
+  "repository": {
+    "url": "https://github.com/Wolfcrafter321/WolfGameFramework",
+    "type": "git"
+  },
+  "dependencies": {
+    "com.unity.netcode.gameobjects": "1.4.0",
+    "com.unity.2d.sprite": "1.0.0"
+  }
+}
