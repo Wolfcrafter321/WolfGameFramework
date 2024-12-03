@@ -6,19 +6,22 @@ using UnityEngine;
 using UnityEditor;
 #endif
 
-public class RuntimeInit : MonoBehaviour
+namespace Wolf
 {
-
-    [RuntimeInitializeOnLoadMethod( RuntimeInitializeLoadType.BeforeSceneLoad )]
-    public static void Init()
+    public class RuntimeInit : MonoBehaviour
     {
-        var obj =Instantiate(Resources.Load("Manager")) ;
-        DontDestroyOnLoad( obj );
 
-    }
+        [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
+        public static void Init()
+        {
+            var obj = Instantiate(Resources.Load("Manager"));
+            DontDestroyOnLoad(obj);
 
-    private void Start()
-    {
-        Destroy(this.gameObject);
+        }
+
+        private void Start()
+        {
+            Destroy(this.gameObject);
+        }
     }
 }
