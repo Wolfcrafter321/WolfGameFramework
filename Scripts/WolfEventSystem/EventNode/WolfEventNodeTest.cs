@@ -18,12 +18,14 @@ namespace Wolf
     public class WolfEventNodeTest : WolfEventNodeBase
     {
 
+        [NodeField, NodeConnectableField] public string moji;
 
         public new static string searchTreePath = "Test";
 
         public override IEnumerator ProcessEvent(WolfEventData source)
         {
-            Debug.Log("whoooaaa");
+            string logmoji = "";
+            Debug.Log(logmoji);
             yield return base.ProcessEvent(source);
         }
 

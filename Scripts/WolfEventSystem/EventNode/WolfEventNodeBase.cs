@@ -59,6 +59,7 @@ namespace Wolf
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]public class EventNodeAttribute : System.Attribute { }
     [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class FunctionNodeAttribute : System.Attribute { }
     [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class VariableNodeAttribute : System.Attribute { }
+
     [AttributeUsage(AttributeTargets.Field)] public class NodeConnectableFieldAttribute : System.Attribute { }
     [AttributeUsage(AttributeTargets.Field)] public class NodeFieldAttribute : System.Attribute { }
     [AttributeUsage(AttributeTargets.Field)]public class InputPortAttribute : System.Attribute{ }

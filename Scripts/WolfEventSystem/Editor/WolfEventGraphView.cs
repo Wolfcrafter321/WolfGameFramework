@@ -29,6 +29,7 @@ namespace Wolf
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
+            this.AddManipulator(new KeyDownManipulator());
 
             /*
             var minimap = new MiniMap();
@@ -73,6 +74,11 @@ namespace Wolf
             foreach (var n in edges)
             {
                 RemoveElement(n);
+            }
+            foreach(var c in graphElements)
+            {
+
+            RemoveElement(c); 
             }
         }
 
@@ -142,11 +148,85 @@ namespace Wolf
             }
         }
 
-        public void TestEvents()
+        public void Test()
         {
-            Debug.Log("test");
-            ports.ForEach((port) => { Debug.Log(port); });
-            
+            var n = nodes.ToList()[0];
+            n.style.borderTopWidth = 6;
+            n.style.borderBottomWidth = 6;
+            n.style.borderRightWidth = 6;
+            n.style.borderLeftWidth = 6;
+            var col = new StyleColor(new Color(0.8f, 0.4f, 0.4f));
+            n.style.borderTopColor = col;
+            n.style.borderBottomColor = col;
+            n.style.borderRightColor = col;
+            n.style.borderLeftColor = col;
+        }
+
+        public void CreateComment()
+        {
+            var sticky = new StickyNote
+            {
+                title = "NewComment"
+            };
+        }
+        public void CreateGroup()
+        {
+            var g = new Group
+            {
+                title = "NewComment"
+            };
+            AddElement(g);
+            foreach (var item in selection)
+            {
+                if(item is GraphElement el)
+                {
+                    g.AddElement(el);
+                }
+            }
+        }
+    }
+
+    class KeyDownManipulator : Manipulator
+    {
+        protected override void RegisterCallbacksOnTarget()
+        {
+            target.RegisterCallback<KeyDownEvent>(OnKeyDown);
+        }
+
+        protected override void UnregisterCallbacksFromTarget()
+        {
+            target.UnregisterCallback<KeyDownEvent>(OnKeyDown);
+        }
+
+        private void OnKeyDown(KeyDownEvent evt)
+        {
+
+            if (evt.ctrlKey && !evt.shiftKey && evt.keyCode == KeyCode.Z)
+            {
+                Undo.PerformUndo();
+            }
+            if (evt.ctrlKey && evt.shiftKey && evt.keyCode == KeyCode.Z)
+            {
+                Undo.PerformRedo();
+            }
+
+            if (!evt.ctrlKey)
+            {
+                if (evt.keyCode == KeyCode.C)
+                {
+                    if (target is WolfEventGraphView view)
+                    {
+                        view.CreateComment();
+                    }
+                }
+                if (evt.keyCode == KeyCode.G)
+                {
+                    if (target is WolfEventGraphView view)
+                    {
+                        view.CreateGroup();
+                    }
+                }
+            }
         }
     }
 }

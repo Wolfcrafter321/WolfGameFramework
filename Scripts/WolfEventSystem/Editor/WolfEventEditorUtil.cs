@@ -29,7 +29,7 @@ namespace Wolf
             WolfEventGraphEditorNode n = new WolfEventGraphEditorNode();
             n.typeName = eventType.ToString();
 
-            string title = eventType.ToString().Replace("Wolf.WolfEventVariable", "").Replace("Wolf.WolfEvent", "");
+            string title = eventType.ToString().Replace("Wolf.WolfEventVariable", "").Replace("Wolf.WolfEventNode", "");
             n.title = title;
             var type = Type.GetType(eventType.ToString());
             var fields = type.GetFields();
@@ -85,7 +85,6 @@ namespace Wolf
                 {
                     if (attr.ToString() == WolfEventNodeAttributeNames.NodeFieldAttribute)
                     {
-                        Debug.Log(field.FieldType);
 
                         if (field.FieldType.ToString() == "System.String") n.mainContainer.Add(new TextField());
                         if (field.FieldType.ToString() == "System.Int") n.mainContainer.Add(new IntegerField());
