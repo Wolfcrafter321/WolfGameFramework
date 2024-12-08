@@ -15,32 +15,62 @@ namespace Wolf
 {
     public class WolfEventGraphView : GraphView
     {
+        public static WolfEventGraphView instance;
+
         private WolfEventNodeSearchWindow searchWindow;
+
+        private Label textLabel;
+        private MiniMap map;
+        protected Vector2 mousePos;
 
         public WolfEventGraphView(WolfEventGraphWindow window)
         {
+            instance = this;
+            name = "GraphView";
+
             SetupZoom(0.02f, 7f);
 
             styleSheets.Add(Resources.Load<StyleSheet>("Editor/GridBackground"));
-            GridBackground gb = new GridBackground();
+            var gb = new GridBackground(); gb.name = "Grid Background"; 
             Insert(0, gb);
             gb.StretchToParentSize();
+
+            var textlabelWrap = new VisualElement();
+            textlabelWrap.pickingMode = PickingMode.Ignore;
+            textlabelWrap.styleSheets.Add(Resources.Load<StyleSheet>("Editor/GraphViewLabelWrap"));
+            textLabel = new Label();
+            textLabel.pickingMode = PickingMode.Ignore;
+            textLabel.name = "DebugInfoText";
+            textLabel.text = "DebugInfoText - Hello!\nABC\nDEF";
+            textLabel.style.marginTop = StyleKeyword.Auto;
+            textlabelWrap.Add(textLabel);
+            Add(textlabelWrap);
 
             this.AddManipulator(new ContentDragger());
             this.AddManipulator(new SelectionDragger());
             this.AddManipulator(new RectangleSelector());
             this.AddManipulator(new KeyDownManipulator());
 
-            /*
-            var minimap = new MiniMap();
-            minimap.SetPosition(new Rect(10, 30, 100, 100));
-            Add(minimap);
-            */
+            map = new MiniMap();
+            map.SetPosition(new Rect(10, 30, 100, 100));
+            Add(map);
+
 
             searchWindow = ScriptableObject.CreateInstance<WolfEventNodeSearchWindow>();
             nodeCreationRequest = context =>
                 SearchWindow.Open(new SearchWindowContext(context.screenMousePosition), searchWindow);
             searchWindow.Init(window, this);
+
+
+            RegisterCallback<MouseMoveEvent>(ctx => {
+                mousePos = ctx.localMousePosition;
+                string moji = "";
+                moji += $"mouse local pos {ctx.localMousePosition.ToString()}\n";
+                moji += $"mouse graph pos {contentViewContainer.WorldToLocal(ctx.localMousePosition).ToString()}\n";
+                textLabel.text = moji;
+            });
+
+
         }
 
         public override List<Port> GetCompatiblePorts(Port startPort, NodeAdapter nodeAdapter)
@@ -62,7 +92,6 @@ namespace Wolf
                     compatiblePorts.Add(port);
             });
             return compatiblePorts;
-            //return base.GetCompatiblePorts(startPort, nodeAdapter);
         }
 
         public void ClearEventNodes()
@@ -83,7 +112,7 @@ namespace Wolf
         }
 
         /// <summary>
-        /// 選択物からイベントノードを取得します。
+        /// 選択物からイベントノードを取得しノードを作成します。
         /// </summary>
         /// <param name="wManager"></param>
         public void LoadEvents(WolfEventData data)
@@ -98,6 +127,8 @@ namespace Wolf
             foreach (var wolfEvent in data.wolfEvents)
             {
                 var n = WolfEventEditorUtil.CreateUIElementNode(wolfEvent);
+                n.SetData(wolfEvent);
+                n.nodeName = wolfEvent.name;
                 AddElement(n);
                 nodes.Add(n);
             }
@@ -106,16 +137,18 @@ namespace Wolf
                 var wolfEvent = data.wolfEvents[i];
                 if (wolfEvent.targetEvent != -1)
                     connectInfos.Add(new Node[2] { nodes[i], nodes[wolfEvent.targetEvent] });
+                foreach(var cVar in wolfEvent.values)
+                {
+                    var input = cVar.GetInputConnectionInfo();
+                }
             }
-
+             
             //connect nodes
             foreach(var connectInfo in connectInfos)
             {
                 var e = WolfEventEditorUtil.ConnectTwoNodes(connectInfo[0], connectInfo[1]);
                 if (e != null) AddElement(e);
-
             }
-
         }
 
         public void SaveEvents(WolfEventData targ)
@@ -125,41 +158,33 @@ namespace Wolf
             var allNodeIDDict = new Dictionary<WolfEventGraphEditorNode, int>();
             for (var i = 0; i < allNodes.Count; i++)
             {
+                // NodeでIDを参照できるようにします
                 allNodeIDDict.Add(allNodes[i] as WolfEventGraphEditorNode, i);
             }
+
             for (var i = 0; i < allNodes.Count; i++)
             {
                 var node = allNodes[i] as WolfEventGraphEditorNode;
                 var typ = Type.GetType(node.typeName);
-                if (typ == null) continue;
+                Debug.Log(typ);
 
-                MethodInfo method = typ.GetMethod("CreateNodeInstance", BindingFlags.Static | BindingFlags.Public);
-                if (method == null) continue;
-                var newData = method.Invoke(null, new object[1] { node }) as WolfEventNodeBase;
-                if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
-                {
-                    foreach (var e in node.Q<Port>("Out").connections)
-                    {
-                        var targNode = e.input.node as WolfEventGraphEditorNode;
-                        newData.targetEvent = allNodeIDDict[targNode];
-                    }
-                }
+                var newData = ScriptableObject.CreateInstance(typ) as WolfEventNodeBase;
+                newData.name = node.nodeName != null? node.nodeName : Guid.NewGuid().ToString();
+                newData.position = node.GetPosition().position;
+                //if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
+                //{
+                //    foreach (var e in node.Q<Port>("Out").connections)
+                //    {
+                //        var targNode = e.input.node as WolfEventGraphEditorNode;
+                //        newData.targetEvent = allNodeIDDict[targNode];
+                //    }
+                //}
                 targ.wolfEvents.Add(newData);
             }
         }
 
         public void Test()
         {
-            var n = nodes.ToList()[0];
-            n.style.borderTopWidth = 6;
-            n.style.borderBottomWidth = 6;
-            n.style.borderRightWidth = 6;
-            n.style.borderLeftWidth = 6;
-            var col = new StyleColor(new Color(0.8f, 0.4f, 0.4f));
-            n.style.borderTopColor = col;
-            n.style.borderBottomColor = col;
-            n.style.borderRightColor = col;
-            n.style.borderLeftColor = col;
         }
 
         public void CreateComment()
@@ -184,6 +209,17 @@ namespace Wolf
                 }
             }
         }
+
+        public void ToggleMiniMap()
+        {
+            map.visible = !map.visible;
+        }
+
+        public static Vector2 GetGraphMousePos()
+        {
+            return instance.contentViewContainer.WorldToLocal(instance.mousePos);
+        }
+
     }
 
     class KeyDownManipulator : Manipulator
@@ -201,31 +237,19 @@ namespace Wolf
         private void OnKeyDown(KeyDownEvent evt)
         {
 
-            if (evt.ctrlKey && !evt.shiftKey && evt.keyCode == KeyCode.Z)
-            {
-                Undo.PerformUndo();
-            }
-            if (evt.ctrlKey && evt.shiftKey && evt.keyCode == KeyCode.Z)
-            {
-                Undo.PerformRedo();
-            }
+            //if (evt.ctrlKey && !evt.shiftKey && evt.keyCode == KeyCode.Z)
+            //    Undo.PerformUndo();
+            //if (evt.ctrlKey && evt.shiftKey && evt.keyCode == KeyCode.Z)
+            //    Undo.PerformRedo();
 
             if (!evt.ctrlKey)
             {
-                if (evt.keyCode == KeyCode.C)
-                {
-                    if (target is WolfEventGraphView view)
-                    {
-                        view.CreateComment();
-                    }
-                }
-                if (evt.keyCode == KeyCode.G)
-                {
-                    if (target is WolfEventGraphView view)
-                    {
-                        view.CreateGroup();
-                    }
-                }
+                //if (evt.keyCode == KeyCode.C)
+                //    if (target is WolfEventGraphView view)
+                //        view.CreateComment();
+                //if (evt.keyCode == KeyCode.G)
+                //    if (target is WolfEventGraphView view)
+                //        view.CreateGroup();
             }
         }
     }

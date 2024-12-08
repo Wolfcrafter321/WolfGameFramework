@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Wolf;
 
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -14,21 +15,32 @@ using System.Reflection;
 
 namespace Wolf
 {
+
     /// <summary>
     /// イベントの根底クラス。
     /// 必要な実装は、virtual IEnumerator ProcessEventと、 public static string searchTreePathの２つを
     /// かならず記述してください。
     /// 現在ノード作成時のフィールドを自動でできないか開発中。
     /// </summary>
-    [System.Serializable, Node]
+    [EventNode]
     public class WolfEventNodeBase : ScriptableObject
     {
-
-        public int targetEvent = -1;
+        public delegate void OnBecomeTarget();
+        public OnBecomeTarget onBecomeTarget;
 
         [Header("node")]
         public Vector2 position;
         public static string searchTreePath = "Base";
+
+
+        public int targetEvent = -1;
+
+
+        [SerializeField]
+        public List<WolfEventConnectableVariableBase> values = new List<WolfEventConnectableVariableBase>
+        {
+            new WolfEventConnectableVariable<string>("BASE")
+        };
 
         /// <summary>
         /// オーバーライドすることで、イベントの挙動を記述できます。
@@ -37,22 +49,18 @@ namespace Wolf
         /// </summary>
         public virtual IEnumerator ProcessEvent(WolfEventData source)
         {
-            Debug.Log("hi this is event. next is " + targetEvent);
             if (targetEvent == -1)
-                source.nextEvent = null;
+                source.currentEvent = null;
             else
-                source.nextEvent = source.wolfEvents[targetEvent];
+                source.currentEvent = source.wolfEvents[targetEvent];
             yield return null;
         }
 
-#if UNITY_EDITOR
-        public static WolfEventNodeBase CreateNodeInstance(Node node)
+        public object GetValueAt(WolfEventData data, int slot)
         {
-            var d = CreateInstance<WolfEventNodeBase>();
-            d.position = node.GetPosition().position;
-            return d;
+            return values[slot].GetValue(data);
         }
-#endif
+
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]public class NodeAttribute : System.Attribute { }

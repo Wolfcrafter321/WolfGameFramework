@@ -53,19 +53,17 @@ namespace Wolf
                 }
 
             return tree;
-            // throw new System.NotImplementedException();
         }
 
         public bool OnSelectEntry(SearchTreeEntry searchTreeEntry, SearchWindowContext context)
         {
-            var position = context.screenMousePosition - wew.position.position;
+            var position = WolfEventGraphView.GetGraphMousePos();
 
             var type =  Type.GetType(searchTreeEntry.userData.ToString());
-            Node n = WolfEventEditorUtil.CreateUIElementNode(type);
+            WolfEventGraphEditorNode n = WolfEventEditorUtil.CreateUIElementNode(type);
             n.SetPosition(new Rect(position, Vector2.zero));
 
-            wegv.AddElement(n);
-
+            wegv.Add(n);
             return true;
         }
     }

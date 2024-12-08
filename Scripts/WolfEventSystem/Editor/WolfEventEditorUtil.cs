@@ -15,27 +15,26 @@ namespace Wolf
     public class WolfEventEditorUtil
     {
 
-        public static Node CreateUIElementNode(WolfEventNodeBase wolfEvent)
+        public static WolfEventGraphEditorNode CreateUIElementNode(WolfEventNodeBase node)
         {
-
-            Type eventType = wolfEvent.GetType();
-            Node n = CreateUIElementNode(eventType);
-            n.SetPosition(new Rect(wolfEvent.position.x, wolfEvent.position.y, 0, 0));
+            Type nodeType = node.GetType();
+            WolfEventGraphEditorNode n = CreateUIElementNode(nodeType);
+            n.SetPosition(new Rect(node.position.x, node.position.y, 0, 0));
             return n;
         }
 
-        public static Node CreateUIElementNode(Type eventType)
+        public static WolfEventGraphEditorNode CreateUIElementNode(Type nodeType)
         {
             WolfEventGraphEditorNode n = new WolfEventGraphEditorNode();
-            n.typeName = eventType.ToString();
+            n.typeName = nodeType.ToString();
 
-            string title = eventType.ToString().Replace("Wolf.WolfEventVariable", "").Replace("Wolf.WolfEventNode", "");
+            string title = nodeType.ToString().Replace("Wolf.WolfEvent", "").Replace("Node", "").Replace("Variable", "");
             n.title = title;
-            var type = Type.GetType(eventType.ToString());
+            var type = Type.GetType(nodeType.ToString());
             var fields = type.GetFields();
 
-
-            foreach (var attr in type.GetCustomAttributes())        // イベント接続のポート
+            // クラスタイプでポート作成
+            foreach (var attr in type.GetCustomAttributes())
             {
                 // ノードのアトリビュートの種類に応じて、ノードのポートを付与していきます
                 if (attr.ToString() == WolfEventNodeAttributeNames.FunctionNodeAttribute)
@@ -60,38 +59,49 @@ namespace Wolf
                     break;
                 }
             }
-            foreach (var field in fields)        // 変数接続のポート
-            {
-                foreach (var attr in field.GetCustomAttributes())
-                {
-                    if (attr.ToString() == WolfEventNodeAttributeNames.NodeConnectableFieldAttribute)
-                    {
-                        Debug.Log(attr);
-                        Debug.Log(field.FieldType.ToString());
-                        if (field.FieldType.ToString() == WolfEventNodeAttributeNames.NodeConnectableFieldAttribute)
-                        {
-                            n.mainContainer.Add(new TextField());
-                        }
-                        var pi = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, typeof(string));
-                        var po = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, typeof(string));
-                        n.inputContainer.Add(pi);
-                        n.outputContainer.Add(po);
-                    }
-                }
-            }
-            foreach (var field in fields)        // フィールド
-            {
-                foreach (var attr in field.GetCustomAttributes())
-                {
-                    if (attr.ToString() == WolfEventNodeAttributeNames.NodeFieldAttribute)
-                    {
 
-                        if (field.FieldType.ToString() == "System.String") n.mainContainer.Add(new TextField());
-                        if (field.FieldType.ToString() == "System.Int") n.mainContainer.Add(new IntegerField());
-                        if (field.FieldType.ToString() == "System.Float") n.mainContainer.Add(new FloatField());
+            // フィールドの追加
+            var tempinst = ScriptableObject.CreateInstance(nodeType) as WolfEventNodeBase;
+            var valuesField = nodeType.GetField("values");
+            foreach (var item in valuesField.GetValue(tempinst) as IEnumerable<object>)
+            {
+                Type itemT = item.GetType();
+                var valField = itemT.GetField("value");
+                var val = valField.GetValue(item);
+                if (itemT.ToString().Contains("Wolf.WolfEventConnectableVariable"))
+                {
+                    string typeText = itemT.ToString().Split("[")[1].Split("]")[0];
+                    Type fTyp = Type.GetType(typeText);
+                    switch (typeText)
+                    {
+                        case "System.String":
+                            var strF = new TextField();
+                            if (val != null) strF.value = (string)val;
+                            n.mainContainer.Add(strF);
+                            break;
+                        case "System.Int":
+                            var intF = new IntegerField();
+                            if (val != null) intF.value = (int)val;
+                            n.mainContainer.Add(intF);
+                            break;
+                        case "System.Int32":
+                            var int32F = new IntegerField();
+                            if (val != null) int32F.value = (int)val;
+                            n.mainContainer.Add(int32F);
+                            break;
+                        case "System.Float":
+                            var floatF = new FloatField();
+                            if (val != null) floatF.value = (float)val;
+                            n.mainContainer.Add(floatF);
+                            break;
                     }
+                    var pi = Port.Create<Edge>(Orientation.Horizontal, Direction.Input, Port.Capacity.Single, fTyp);
+                    var po = Port.Create<Edge>(Orientation.Horizontal, Direction.Output, Port.Capacity.Single, fTyp);
+                    n.inputContainer.Add(pi);
+                    n.outputContainer.Add(po);
                 }
             }
+
             n.RefreshPorts();
 
             return n;

@@ -2,7 +2,6 @@ using UnityEngine;
 using System;
 using System.Collections.Generic;
 using UnityEditor;
-using CodiceApp.EventTracking.Plastic;
 
 namespace Wolf
 {
@@ -17,30 +16,32 @@ namespace Wolf
 
         private void Awake()
         {
-            startEvent  = new List<int>();
-            updateEvent = new List<int>();
-            customEvent = new Dictionary<string, int>();
+            //startEvent  = new List<int>();
+            //updateEvent = new List<int>();
+            //customEvent = new Dictionary<string, int>();
 
-            for (int i = 0; i < wolfEvent.wolfEvents.Count; i++)
-            {
-                var node = wolfEvent.wolfEvents[i];
+            //for (int i = 0; i < wolfEvent.wolfEvents.Count; i++)
+            //{
+            //    var node = wolfEvent.wolfEvents[i];
 
-                if (node.GetType() == typeof(WolfEventNodeBase))
-                {
-                    switch (node.name)
-                    {
-                        default:
-                            customEvent.Add(node.name, i);
-                            break;
-                        case "Start":
-                            startEvent.Add(i);
-                            break;
-                        case "Update":
-                            updateEvent.Add(i);
-                            break;
-                    }
-                }
-            }
+            //    if (node.GetType() == typeof(WolfEventNodeBase))
+            //    {
+            //        switch (node.name)
+            //        {
+            //            default:
+            //                customEvent.Add(node.name, i);
+            //                break;
+            //            case "Start":
+            //                startEvent.Add(i);
+            //                break;
+            //            case "Update":
+            //                updateEvent.Add(i);
+            //                break;
+            //        }
+            //    }
+            //}
+
+
         }
 
         private void Start()
@@ -101,8 +102,26 @@ namespace Wolf
                 //targ.wolfEvent.Add(newSO);
                 data.wolfEvents = new List<WolfEventNodeBase>();
                 var node1 = ScriptableObject.CreateInstance<WolfEventNodeBase>();
-                var node2 = ScriptableObject.CreateInstance<WolfEventNodeBase>();
+                var node2 = ScriptableObject.CreateInstance<WolfEventNodeTest>();
                 var node3 = ScriptableObject.CreateInstance<WolfEventNodeBase>();
+                node1.name = "main";
+                node2.name = Guid.NewGuid().ToString();
+                node3.name = Guid.NewGuid().ToString();
+                node1.position = new Vector2(0, 0);
+                node2.position = new Vector2(200, 0);
+                node3.position = new Vector2(400, 0);
+                node1.targetEvent = 1;
+                node2.targetEvent = 2;
+                //node1.logMoji.value = "A";
+                //node2.logMoji.value = "B";
+                //node2.test.value = "BBBBBBBBBB";
+                //node3.logMoji.value = "C";
+                node1.values = new List<WolfEventConnectableVariableBase>
+                { new WolfEventConnectableVariable<string>("A") };
+                node2.values = new List<WolfEventConnectableVariableBase>
+                { new WolfEventConnectableVariable<string>("B") };
+                node3.values = new List<WolfEventConnectableVariableBase>
+                { new WolfEventConnectableVariable<string>("C") };
                 data.wolfEvents.Add(node1);
                 data.wolfEvents.Add(node2);
                 data.wolfEvents.Add(node3);

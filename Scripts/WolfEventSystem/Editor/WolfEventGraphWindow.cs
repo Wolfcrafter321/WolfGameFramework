@@ -40,14 +40,9 @@ namespace Wolf
             CreateToolBar();
         }
 
-        private void OnDisable()
-        {
-            rootVisualElement.Remove(view);
-        }
-
         void InitializeGraphView()
         {
-            view = new WolfEventGraphView(this){name = "GraphView" };
+            view = new WolfEventGraphView(this);
             view.StretchToParentSize();
             rootVisualElement.Add(view);
         }
@@ -59,11 +54,13 @@ namespace Wolf
             var btn1 = new ToolbarButton(clickEvent: () => { SaveEvents(); }){ text = "Save", tooltip = "Save nodes to selected object."};
             var btn2 = new ToolbarButton(clickEvent: () => { LoadEvents(); }) { text = "Load", tooltip = "Load nodes from selected object." };
             var btn3 = new ToolbarButton(clickEvent: () => { view.ClearEventNodes(); }) { text = "Clear" };
-            var btn4 = new ToolbarButton(clickEvent: () => { view.Test(); }) { text = "Test" };
+            var btn4 = new ToolbarButton(clickEvent: () => { view.ToggleMiniMap(); }) { text = "MiniMap" };
+            var btn5 = new ToolbarButton(clickEvent: () => { view.Test(); }) { text = "Test" };
             tb.Add(btn1);
             tb.Add(btn2);
             tb.Add(btn3);
             tb.Add(btn4);
+            tb.Add(btn5);
             rootVisualElement.Add(tb);
 
         }
