@@ -1,0 +1,26 @@
+VisualElement *{
+	height: 24px;
+	flex-direction: Row;
+}
+VisualElement {
+	flex-grow: 1;
+	background-color:rgba(50,50,50,0.7);
+}
+VisualElement #inputContainer, #outputContainer{
+	flex-grow: 0;
+}
+VisualElement #fieldContainer {
+	min-width:100px;
+	flex-grow: 1;
+}
+VisualElement #fieldContainer > * {
+	min-width:60px;
+	flex-grow: 1;
+}
+VisualElement Label{
+	flex-grow: 0;
+	min-width: 10px;
+}
+VisualElement #divider{
+	max-width:1px;
+}

@@ -63,7 +63,7 @@ namespace Wolf
             WolfEventGraphEditorNode n = WolfEventEditorUtil.CreateUIElementNode(type);
             n.SetPosition(new Rect(position, Vector2.zero));
 
-            wegv.Add(n);
+            wegv.AddElement(n);
             return true;
         }
     }

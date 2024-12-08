@@ -23,12 +23,16 @@ namespace Wolf
         [SerializeField]
         public new List<WolfEventConnectableVariableBase> values = new List<WolfEventConnectableVariableBase>
         {
-            new WolfEventConnectableVariable<string>("TEST"),
-            new WolfEventConnectableVariable<int>(0)
+            new WolfEventConnectableVariable<string>("LogMoji", "TEST")
+            //new WolfEventConnectableVariable<int>(0),
+            //new WolfEventConnectableVariable<GameObject>(null),
+            //new WolfEventConnectableVariable<GameObject>(null)
+
         };
 
         public override IEnumerator ProcessEvent(WolfEventData source)
         {
+            Debug.Log($"This is TEST NODE! {values[0].GetValue(source)}");
             yield return base.ProcessEvent(source);
         }
 

@@ -32,14 +32,12 @@ namespace Wolf
         public Vector2 position;
         public static string searchTreePath = "Base";
 
-
         public int targetEvent = -1;
-
 
         [SerializeField]
         public List<WolfEventConnectableVariableBase> values = new List<WolfEventConnectableVariableBase>
         {
-            new WolfEventConnectableVariable<string>("BASE")
+            new WolfEventConnectableVariable<string>("LogMoji", "BASE")
         };
 
         /// <summary>
@@ -60,7 +58,6 @@ namespace Wolf
         {
             return values[slot].GetValue(data);
         }
-
     }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = true)]public class NodeAttribute : System.Attribute { }

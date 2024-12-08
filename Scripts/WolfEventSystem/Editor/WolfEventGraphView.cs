@@ -53,6 +53,7 @@ namespace Wolf
 
             map = new MiniMap();
             map.SetPosition(new Rect(10, 30, 100, 100));
+            map.visible = false;
             Add(map);
 
 
@@ -68,6 +69,7 @@ namespace Wolf
                 moji += $"mouse local pos {ctx.localMousePosition.ToString()}\n";
                 moji += $"mouse graph pos {contentViewContainer.WorldToLocal(ctx.localMousePosition).ToString()}\n";
                 textLabel.text = moji;
+
             });
 
 
@@ -111,13 +113,9 @@ namespace Wolf
             }
         }
 
-        /// <summary>
-        /// 選択物からイベントノードを取得しノードを作成します。
-        /// </summary>
-        /// <param name="wManager"></param>
+        
         public void LoadEvents(WolfEventData data)
         {
-            //clear
             ClearEventNodes();
 
             var connectInfos = new List<Node[]>();
@@ -154,6 +152,7 @@ namespace Wolf
         public void SaveEvents(WolfEventData targ)
         {
             targ.wolfEvents = new List<WolfEventNodeBase>();
+
             var allNodes = nodes.ToList();
             var allNodeIDDict = new Dictionary<WolfEventGraphEditorNode, int>();
             for (var i = 0; i < allNodes.Count; i++)
@@ -171,20 +170,35 @@ namespace Wolf
                 var newData = ScriptableObject.CreateInstance(typ) as WolfEventNodeBase;
                 newData.name = node.nodeName != null? node.nodeName : Guid.NewGuid().ToString();
                 newData.position = node.GetPosition().position;
-                //if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
+                
+                // main Connection
+                if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
+                {
+                    foreach (var e in node.Q<Port>("Out").connections)
+                    {
+                        var targNode = e.input.node as WolfEventGraphEditorNode;
+                        newData.targetEvent = allNodeIDDict[targNode];
+                    }
+                }
+                // fields connections
+                //foreach (var field in node.fields)
                 //{
-                //    foreach (var e in node.Q<Port>("Out").connections)
-                //    {
-                //        var targNode = e.input.node as WolfEventGraphEditorNode;
-                //        newData.targetEvent = allNodeIDDict[targNode];
-                //    }
                 //}
+
+
                 targ.wolfEvents.Add(newData);
             }
         }
 
         public void Test()
         {
+            var allNodes = nodes.ToList();
+            var targ = UnityEngine.Random.Range(0, allNodes.Count -1);
+            for (var i = 0; i < allNodes.Count; i++)
+            {
+                var n = (WolfEventGraphEditorNode)allNodes[i];
+                n.orangeLine.visible = i == targ? true : false;
+            }
         }
 
         public void CreateComment()

@@ -23,12 +23,7 @@ namespace Wolf
 
         public List<WolfEventNodeBase> wolfEvents;
 
-        [HideInInspector] private WolfEventNodeBase _currentEvent;
-        [HideInInspector] public WolfEventNodeBase currentEvent
-        {
-            get { return _currentEvent; }
-            set { _currentEvent = value; _currentEvent.onBecomeTarget?.Invoke(); }
-        }
+        [HideInInspector] public WolfEventNodeBase currentEvent;
 
 
         public void StartEventAt(int index, WolfEventSystem parentGameObject)
@@ -45,6 +40,7 @@ namespace Wolf
         {
             while (currentEvent != null)
             {
+                if (currentEvent.onBecomeTarget != null) currentEvent.onBecomeTarget.Invoke();
                 yield return currentEvent.ProcessEvent(this);
             }
         }
@@ -76,7 +72,7 @@ namespace Wolf
             if (GUILayout.Button("Open Editor Window", GUILayout.Height(29)))
             {
                 var w = WolfEventGraphWindow.OpenWolfEventGraphWindow();
-                w.LoadEvents(targ);
+                w.LoadEvent(targ);
             }
 
             base.OnInspectorGUI();
