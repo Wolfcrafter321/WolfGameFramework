@@ -81,10 +81,9 @@ namespace Wolf {
             }
         }
 
-
         public void AddConnectableField(Type t, object defaultValue = null)
         {
-            var wrapper = new WolfEventGraphEditorConnectableFieldWrapper();
+            var wrapper = new WolfEventGraphEditorConnectableFieldWrapper(t);
 
             switch (t.ToString())
             {
@@ -94,6 +93,7 @@ namespace Wolf {
                     strF.multiline = true;
                     strF.value = defaultValue != null ? (string)defaultValue : "";
                     wrapper.fieldContainer.Add(strF);
+                    wrapper.onGetValue += () => { return strF.value; };
                     break;
                 case "System.Int":
                 case "System.Int32":
@@ -101,13 +101,21 @@ namespace Wolf {
                     intF.label = "Int";
                     intF.value = defaultValue != null ? (int)defaultValue : 0;
                     wrapper.fieldContainer.Add(intF);
+                    wrapper.onGetValue += () => { return intF.value; };
+                    break;
+                case "System.Single":
+                    var floatSF = new FloatField() { label = name };
+                    floatSF.label = "Float";
+                    floatSF.value = defaultValue != null ? (float)defaultValue : 0f;
+                    wrapper.fieldContainer.Add(floatSF);
+                    wrapper.onGetValue += () => { return floatSF.value; };
                     break;
                 case "System.Float":
-                case "System.Single":
                     var floatF = new FloatField() { label = name };
                     floatF.label = "Float";
                     floatF.value = defaultValue != null ? (float)defaultValue : 0f;
                     wrapper.fieldContainer.Add(floatF);
+                    wrapper.onGetValue += () => { return floatF.value; };
                     break;
             }
 
@@ -123,18 +131,20 @@ namespace Wolf {
         public void SetData(WolfEventNodeBase n)
         {
             var valuesField = n.GetType().GetField("values");
-            
         }
-
     }
+
     public class WolfEventGraphEditorConnectableFieldWrapper : VisualElement
     {
+        public Type fieldType;
+
         public VisualElement fieldContainer;
         public VisualElement inputContainer;
         public VisualElement outputContainer;
 
-        public WolfEventGraphEditorConnectableFieldWrapper()
+        public WolfEventGraphEditorConnectableFieldWrapper(Type fieldType)
         {
+            this.fieldType = fieldType;
             name = "FieldWrapper";
             styleSheets.Add(Resources.Load<StyleSheet>("Editor/NodeConnectableField"));
 
@@ -151,6 +161,19 @@ namespace Wolf {
             Add(fieldContainer);
             Add(div2);
             Add(outputContainer);
+        }
+
+        public delegate object OnGetValue();
+        public OnGetValue onGetValue;
+
+        public object GetData()
+        {
+            if(fieldType == null) return -1;
+            if(fieldContainer == null) return -1;
+
+            if(onGetValue != null) return onGetValue();
+
+            return -1;
         }
     }
 }

@@ -15,35 +15,6 @@ namespace Wolf
         private List<int> updateEvent;
         private Dictionary<string, int> customEvent;
 
-        private void Awake()
-        {
-            //startEvent  = new List<int>();
-            //updateEvent = new List<int>();
-            //customEvent = new Dictionary<string, int>();
-
-            //for (int i = 0; i < wolfEvent.wolfEvents.Count; i++)
-            //{
-            //    var node = wolfEvent.wolfEvents[i];
-
-            //    if (node.GetType() == typeof(WolfEventNodeBase))
-            //    {
-            //        switch (node.name)
-            //        {
-            //            default:
-            //                customEvent.Add(node.name, i);
-            //                break;
-            //            case "Start":
-            //                startEvent.Add(i);
-            //                break;
-            //            case "Update":
-            //                updateEvent.Add(i);
-            //                break;
-            //        }
-            //    }
-            //}
-
-
-        }
 
         private void Start()
         {
@@ -130,6 +101,18 @@ namespace Wolf
             {
                 var w = WolfEventGraphWindow.OpenWolfEventGraphWindow();
                 w.LoadEvent(targ.wolfEvent);
+            }
+
+            if (GUILayout.Button("Debug", GUILayout.Height(29)))
+            {
+                foreach (var item in targ.wolfEvent.wolfEvents)
+                {
+                    Debug.Log($"event node - {item} - {item.targetEvent}");
+                    foreach (var f in item.values)
+                    {
+                        Debug.Log($"\t{f.GetThisValue()}");
+                    }
+                }
             }
 
             serializedObject.ApplyModifiedProperties();

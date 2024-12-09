@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Wolf;
+using Unity.Plastic.Newtonsoft.Json.Linq;
+
 
 
 #if UNITY_EDITOR
@@ -15,21 +17,25 @@ using System.Reflection;
 
 namespace Wolf
 {
-    
+    [System.Serializable]
+    public struct ConnectionInfo
+    {
+        public int targetNode;
+        public int targerSlot;
+    }
 
     [System.Serializable]
-    public abstract class WolfEventConnectableVariableBase {
+    public abstract class WolfEventConnectableVariableBase
+    {
+
+        public abstract object GetThisValue();
         public abstract object GetValue(WolfEventData data);
+        public abstract void SetValue(object value);
 
         public abstract ConnectionInfo GetInputConnectionInfo();
         public abstract ConnectionInfo GetOutputConnectionInfo();
 
-        [System.Serializable]
-        public struct ConnectionInfo
-        {
-            public int targetNode;
-            public int targerSlot;
-        }
+        
 
     }
 
@@ -50,6 +56,11 @@ namespace Wolf
         public ConnectionInfo inputSideConnection;
         public ConnectionInfo outputSideConnection;
 
+        public override object GetThisValue()
+        {
+            return value;
+        }
+
         public override object GetValue(WolfEventData data)
         {
             if(inputSideConnection.targetNode != -1)
@@ -57,6 +68,12 @@ namespace Wolf
                 return data.wolfEvents[inputSideConnection.targetNode].GetValueAt(data, inputSideConnection.targerSlot);
             }
             return value;
+        }
+
+        public override void SetValue(object value)
+        {
+            Debug.Log(value);
+            this.value = (T)value;
         }
 
         public override ConnectionInfo GetInputConnectionInfo() { return inputSideConnection; }

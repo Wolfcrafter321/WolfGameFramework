@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Rendering;
+using System.Linq;
+
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -165,11 +167,12 @@ namespace Wolf
             {
                 var node = allNodes[i] as WolfEventGraphEditorNode;
                 var typ = Type.GetType(node.typeName);
-                Debug.Log(typ);
+                //Debug.Log(typ); // WolfEventNodeBase , Teste, Wait ....
 
                 var newData = ScriptableObject.CreateInstance(typ) as WolfEventNodeBase;
                 newData.name = node.nodeName != null? node.nodeName : Guid.NewGuid().ToString();
                 newData.position = node.GetPosition().position;
+                
                 
                 // main Connection
                 if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
@@ -181,9 +184,12 @@ namespace Wolf
                     }
                 }
                 // fields connections
-                //foreach (var field in node.fields)
-                //{
-                //}
+                var fields = node.fieldContainer.Children().ToArray();
+                for (int j = 0; j < fields.Length; j++)
+                {
+                    var field = fields[j] as WolfEventGraphEditorConnectableFieldWrapper;
+                    newData.values[j].SetValue(field.GetData());
+                }
 
 
                 targ.wolfEvents.Add(newData);

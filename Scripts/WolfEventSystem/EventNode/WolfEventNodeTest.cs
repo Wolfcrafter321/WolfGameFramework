@@ -24,10 +24,6 @@ namespace Wolf
         public new List<WolfEventConnectableVariableBase> values = new List<WolfEventConnectableVariableBase>
         {
             new WolfEventConnectableVariable<string>("LogMoji", "TEST")
-            //new WolfEventConnectableVariable<int>(0),
-            //new WolfEventConnectableVariable<GameObject>(null),
-            //new WolfEventConnectableVariable<GameObject>(null)
-
         };
 
         public override IEnumerator ProcessEvent(WolfEventData source)

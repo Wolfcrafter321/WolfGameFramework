@@ -71,7 +71,6 @@ namespace Wolf
             {
                 //var result = EditorUtility.DisplayDialog(
                 //    "Save Confirmation",  "Do you want to save your changes?", "OK", "Cancel");
-
                 //if (!result) return;
 
                 view.SaveEvents(targetData);
