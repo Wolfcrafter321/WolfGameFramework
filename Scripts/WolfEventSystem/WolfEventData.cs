@@ -1,7 +1,18 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor;
 using UnityEngine;
+using Wolf;
+
+
+#if UNITY_EDITOR
+using UnityEditor;
+using UnityEngine.UIElements;
+using UnityEditor.Experimental;
+using UnityEditor.Experimental.GraphView;
+using System.Reflection;
+#endif
+
 
 namespace Wolf
 {
@@ -9,10 +20,11 @@ namespace Wolf
     [CreateAssetMenu(fileName ="New Event", menuName ="Wolf/WolfEventNodeData")]
     public class WolfEventData : ScriptableObject
     {
+
         public List<WolfEventNodeBase> wolfEvents;
 
-        [HideInInspector]
-        public WolfEventNodeBase nextEvent;
+        [HideInInspector] public WolfEventNodeBase currentEvent;
+
 
         public void StartEventAt(int index, WolfEventSystem parentGameObject)
         {
@@ -20,16 +32,16 @@ namespace Wolf
         }
         public void StartEventAt(WolfEventSystem parentGameObject, int index)
         {
-            nextEvent = wolfEvents[0];
+            currentEvent = wolfEvents[index];
             parentGameObject.StartCoroutine(StartEventCoroutine());
         }
 
-
         IEnumerator StartEventCoroutine()
         {
-            while (nextEvent != null)
+            while (currentEvent != null)
             {
-                yield return nextEvent.ProcessEvent(this);
+                if (currentEvent.onBecomeTarget != null) currentEvent.onBecomeTarget.Invoke();
+                yield return currentEvent.ProcessEvent(this);
             }
         }
 
@@ -51,22 +63,16 @@ namespace Wolf
             if (GUILayout.Button("CreateEvent - Base"))
             {
                 var data = ScriptableObject.CreateInstance<WolfEventNodeBase>();
+                data.name = Guid.NewGuid().ToString();
                 targ.wolfEvents.Add(data);
-                data.position = new Vector2(Random.Range(-100, 100), Random.Range(-100, 100));
-                EditorUtility.SetDirty(targ);
-            }
-            if (GUILayout.Button("CreateEvent - Test"))
-            {
-                var data = ScriptableObject.CreateInstance<WolfEventNodeTest>();
-                targ.wolfEvents.Add(data);
-                data.position = new Vector2(Random.Range(-100, 100), Random.Range(-100, 100));
+                data.position = new Vector2(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100));
                 EditorUtility.SetDirty(targ);
             }
 
             if (GUILayout.Button("Open Editor Window", GUILayout.Height(29)))
             {
                 var w = WolfEventGraphWindow.OpenWolfEventGraphWindow();
-                w.LoadEvents(targ);
+                w.LoadEvent(targ);
             }
 
             base.OnInspectorGUI();

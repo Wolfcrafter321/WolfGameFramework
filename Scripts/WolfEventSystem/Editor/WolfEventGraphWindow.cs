@@ -40,14 +40,9 @@ namespace Wolf
             CreateToolBar();
         }
 
-        private void OnDisable()
-        {
-            rootVisualElement.Remove(view);
-        }
-
         void InitializeGraphView()
         {
-            view = new WolfEventGraphView(this){name = "GraphView" };
+            view = new WolfEventGraphView(this);
             view.StretchToParentSize();
             rootVisualElement.Add(view);
         }
@@ -57,13 +52,15 @@ namespace Wolf
             var tb = new Toolbar();
 
             var btn1 = new ToolbarButton(clickEvent: () => { SaveEvents(); }){ text = "Save", tooltip = "Save nodes to selected object."};
-            var btn2 = new ToolbarButton(clickEvent: () => { LoadEvents(); }) { text = "Load", tooltip = "Load nodes from selected object." };
+            var btn2 = new ToolbarButton(clickEvent: () => { LoadFromSelectedEvents(); }) { text = "Load", tooltip = "Load nodes from selected object." };
             var btn3 = new ToolbarButton(clickEvent: () => { view.ClearEventNodes(); }) { text = "Clear" };
-            var btn4 = new ToolbarButton(clickEvent: () => { view.Test(); }) { text = "Test" };
+            var btn4 = new ToolbarButton(clickEvent: () => { view.ToggleMiniMap(); }) { text = "MiniMap" };
+            var btn5 = new ToolbarButton(clickEvent: () => { view.Test(); }) { text = "Test" };
             tb.Add(btn1);
             tb.Add(btn2);
             tb.Add(btn3);
             tb.Add(btn4);
+            tb.Add(btn5);
             rootVisualElement.Add(tb);
 
         }
@@ -74,7 +71,6 @@ namespace Wolf
             {
                 //var result = EditorUtility.DisplayDialog(
                 //    "Save Confirmation",  "Do you want to save your changes?", "OK", "Cancel");
-
                 //if (!result) return;
 
                 view.SaveEvents(targetData);
@@ -83,49 +79,27 @@ namespace Wolf
             EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         }
 
-        public void LoadEvents(WolfEventSystem sysComp)
-        {
-            targetData = sysComp.wolfEvent;
-            view.LoadEvents(sysComp.wolfEvent);
-            titleContent = new GUIContent(text: sysComp.ToString());
-        }
-
-        public void LoadEvents(WolfEventData data)
+        public void LoadEvent(WolfEventData data)
         {
             targetData = data;
             view.LoadEvents(data);
             titleContent = new GUIContent(text: data.ToString());
         }
 
-        void LoadEvents()
+        void LoadFromSelectedEvents()
         {
             // find from scene
-            if(Selection.activeGameObject != null)
+            if(Selection.activeGameObject != null && Selection.count == 1)
             {
-                var target = GetWolfEventManagerFromSceneSelectedObject();
+                WolfEventSystem target = null;
+                Selection.activeTransform.gameObject.TryGetComponent<WolfEventSystem>(out target);
+
                 if (view != null && target != null)
                 {
-                    view.LoadEvents(target);
+                    view.LoadEvents(target.wolfEvent);
                     titleContent = new GUIContent(text: target.ToString());
                 }
-            } else
-            if (Selection.activeObject != null)
-            {
-                if (Selection.activeObject is WolfEventData wolfEventNodeData)
-                {
-                    view.LoadEvents(wolfEventNodeData);
-                    titleContent = new GUIContent(text: wolfEventNodeData.ToString());
-                }
-            }
-
-            //find from selected asset
-        }
-
-        WolfEventData GetWolfEventManagerFromSceneSelectedObject()        // ToDo: スクリプタブルオブジェクトに対応する
-        {
-            WolfEventSystem target = null;
-            if (Selection.count == 1) Selection.activeTransform.gameObject.TryGetComponent<WolfEventSystem>(out target);
-            return target.wolfEvent;
+            } 
         }
 
 

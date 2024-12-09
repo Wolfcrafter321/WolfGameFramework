@@ -1,0 +1,11 @@
+VisualElement {
+	position : Absolute;
+	top : 0px;
+	bottom : 0px;
+	left : 0px;
+	right : 0px;
+	margin-top		: 35px;
+	margin-bottom	: 15px;
+	margin-left		: 15px;
+	margin-right	: 15px;
+}
