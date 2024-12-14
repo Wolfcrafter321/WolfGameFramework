@@ -3,6 +3,8 @@ using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Codice.CM.WorkspaceServer.DataStore;
+
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
@@ -12,21 +14,18 @@ using UnityEditor.Experimental.GraphView;
 
 namespace Wolf
 {
-    public class WolfEventEditorUtil
+    public static class WolfEventEditorUtil
     {
-
-        public static WolfEventGraphEditorNode CreateUIElementNode(WolfEventNodeBase node)
+        public static WolfEventNodeBase CreateNodeInstance(Type nodeType)
         {
-            Type nodeType = node.GetType();
-            WolfEventGraphEditorNode n = CreateUIElementNode(nodeType);
-            n.SetPosition(new Rect(node.position.x, node.position.y, 0, 0));
-            return n;
+            var inst = ScriptableObject.CreateInstance(nodeType) as WolfEventNodeBase;
+            inst.InitFields(inst);
+            return inst;
         }
 
         public static WolfEventGraphEditorNode CreateUIElementNode(Type nodeType)
         {
             WolfEventGraphEditorNode n = new WolfEventGraphEditorNode(nodeType);
-            n.RefreshPorts();
             return n;
         }
 

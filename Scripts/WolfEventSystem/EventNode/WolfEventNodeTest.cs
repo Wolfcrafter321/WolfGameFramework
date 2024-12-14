@@ -1,34 +1,18 @@
-using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using Wolf;
 
-
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEditor.Experimental;
-using UnityEditor.Experimental.GraphView;
-using System.Reflection;
-#endif
-
 namespace Wolf
 {
-    [EventNode]
+    [WolfEventNode, NodeSearchPath("Event/Test")]
     public class WolfEventNodeTest : WolfEventNodeBase
     {
-        public new static string searchTreePath = "Test";
 
-        [SerializeField]
-        public new List<WolfEventConnectableVariableBase> values = new List<WolfEventConnectableVariableBase>
-        {
-            new WolfEventConnectableVariable<string>("LogMoji", "TEST")
-        };
+        public ConnectableVariableString test;
 
         public override IEnumerator ProcessEvent(WolfEventData source)
         {
-            Debug.Log($"This is TEST NODE! {values[0].GetValue(source)}");
+            Debug.Log($"This is TEST NODE! {test.GetValue(source)}");
             yield return base.ProcessEvent(source);
         }
 

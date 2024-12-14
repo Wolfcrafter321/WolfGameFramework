@@ -1,12 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEditor.PackageManager.UI;
-using System.Reflection;
-using System;
-using UnityEditor.SceneManagement;
-
-
 
 #if UNITY_EDITOR
 using UnityEditor;
@@ -22,11 +16,6 @@ namespace Wolf
         public WolfEventGraphView view;
         public WolfEventData targetData;
 
-        /// <summary>
-        /// ノードエディターを開きます
-        /// </summary>
-        /// <returns>WolfEventGraphWindow : Windowクラスが帰ってきます。</returns>
-        [MenuItem("Wolf/WolfEventGraphWindow")]
         public static WolfEventGraphWindow OpenWolfEventGraphWindow()
         {
             var window = GetWindow<WolfEventGraphWindow>();
@@ -76,7 +65,7 @@ namespace Wolf
                 view.SaveEvents(targetData);
             }
 
-            EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
+            //EditorSceneManager.SaveScene(EditorSceneManager.GetActiveScene());
         }
 
         public void LoadEvent(WolfEventData data)

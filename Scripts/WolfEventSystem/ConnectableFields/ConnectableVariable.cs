@@ -3,17 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Wolf;
-using Unity.Plastic.Newtonsoft.Json.Linq;
-
-
-
-#if UNITY_EDITOR
-using UnityEditor;
-using UnityEngine.UIElements;
-using UnityEditor.Experimental;
-using UnityEditor.Experimental.GraphView;
-using System.Reflection;
-#endif
 
 namespace Wolf
 {
@@ -21,11 +10,11 @@ namespace Wolf
     public struct ConnectionInfo
     {
         public int targetNode;
-        public int targerSlot;
+        public int targetSlot;
     }
 
     [System.Serializable]
-    public abstract class WolfEventConnectableVariableBase
+    public abstract class ConnectableVariableBase : ScriptableObject
     {
 
         public abstract object GetThisValue();
@@ -35,22 +24,16 @@ namespace Wolf
         public abstract ConnectionInfo GetInputConnectionInfo();
         public abstract ConnectionInfo GetOutputConnectionInfo();
 
-        
-
     }
 
     [System.Serializable]
-    public class WolfEventConnectableVariable<T> : WolfEventConnectableVariableBase
+    public class ConnectableVariable<T> : ConnectableVariableBase
     {
-        
-        public WolfEventConnectableVariable(string name, object val){
-            if(val != null) value = (T)val;
-            this.name = name;
-            inputSideConnection = new ConnectionInfo { targetNode = -1, targerSlot = -1 };
-            outputSideConnection = new ConnectionInfo { targetNode = -1, targerSlot = -1 };
+        public ConnectableVariable(){
+            inputSideConnection = new ConnectionInfo { targetNode = -1, targetSlot = -1 };
+            outputSideConnection = new ConnectionInfo { targetNode = -1, targetSlot = -1 };
         }
 
-        public string name;
         public T value;
 
         public ConnectionInfo inputSideConnection;
@@ -64,9 +47,7 @@ namespace Wolf
         public override object GetValue(WolfEventData data)
         {
             if(inputSideConnection.targetNode != -1)
-            {
-                return data.wolfEvents[inputSideConnection.targetNode].GetValueAt(data, inputSideConnection.targerSlot);
-            }
+                return data.wolfEvents[inputSideConnection.targetNode].GetValue(inputSideConnection.targetSlot);
             return value;
         }
 
@@ -78,6 +59,6 @@ namespace Wolf
 
         public override ConnectionInfo GetInputConnectionInfo() { return inputSideConnection; }
         public override ConnectionInfo GetOutputConnectionInfo() { return outputSideConnection; }
-
     }
+
 }

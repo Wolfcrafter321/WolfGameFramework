@@ -3,6 +3,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Wolf;
+using WolfEventNode;
+
 
 
 #if UNITY_EDITOR
@@ -21,10 +23,13 @@ namespace Wolf
     public class WolfEventData : ScriptableObject
     {
 
+        public WolfEventData()
+        {
+            wolfEvents = new List<WolfEventNodeBase>();
+        }
+
         public List<WolfEventNodeBase> wolfEvents;
-
         [HideInInspector] public WolfEventNodeBase currentEvent;
-
 
         public void StartEventAt(int index, WolfEventSystem parentGameObject)
         {
@@ -40,7 +45,7 @@ namespace Wolf
         {
             while (currentEvent != null)
             {
-                if (currentEvent.onBecomeTarget != null) currentEvent.onBecomeTarget.Invoke();
+                if (currentEvent.onStartEvent != null) currentEvent.onStartEvent.Invoke();
                 yield return currentEvent.ProcessEvent(this);
             }
         }
@@ -60,6 +65,7 @@ namespace Wolf
         {
             targ = this.target as WolfEventData;
 
+
             if (GUILayout.Button("CreateEvent - Base"))
             {
                 var data = ScriptableObject.CreateInstance<WolfEventNodeBase>();
@@ -67,6 +73,7 @@ namespace Wolf
                 targ.wolfEvents.Add(data);
                 data.position = new Vector2(UnityEngine.Random.Range(-100, 100), UnityEngine.Random.Range(-100, 100));
                 EditorUtility.SetDirty(targ);
+                AssetDatabase.AddObjectToAsset(data, targ);
             }
 
             if (GUILayout.Button("Open Editor Window", GUILayout.Height(29)))

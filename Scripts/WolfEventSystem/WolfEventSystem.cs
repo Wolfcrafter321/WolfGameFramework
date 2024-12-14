@@ -65,37 +65,34 @@ namespace Wolf
 
             if (GUILayout.Button("CreateEventSO"))
             {
-                if (targ.wolfEvent == null)
-                {
-                    //targ.wolfEvent = new List<WolfEventNodeData>();
-                }
                 var data = ScriptableObject.CreateInstance<WolfEventData>();
-                data.name = targ.name+"'s Event";
-                //targ.wolfEvent.Add(newSO);
-                data.wolfEvents = new List<WolfEventNodeBase>();
-                var node1 = ScriptableObject.CreateInstance<WolfEventNodeBase>();
-                var node2 = ScriptableObject.CreateInstance<WolfEventNodeTest>();
-                var node3 = ScriptableObject.CreateInstance<WaitNode>();
-                var node4 = ScriptableObject.CreateInstance<WolfEventNodeBase>();
-                node1.name = "main";
-                node2.name = Guid.NewGuid().ToString();
-                node3.name = Guid.NewGuid().ToString();
-                node4.name = Guid.NewGuid().ToString();
-                node1.position = new Vector2(0, 0);
-                node2.position = new Vector2(200, 0);
-                node3.position = new Vector2(400, 0);
-                node4.position = new Vector2(800, 0);
-                node1.targetEvent = 1;
-                node2.targetEvent = 2;
-                node3.targetEvent = 3;
+                data.name = targ.name + "'s Event";
+                var node1 = WolfEventEditorUtil.CreateNodeInstance(typeof(WolfEventNodeTest)) as WolfEventNodeTest;
+                var node2 = WolfEventEditorUtil.CreateNodeInstance(typeof(WolfEventNodeTest)) as WolfEventNodeTest;
+                var node3 = WolfEventEditorUtil.CreateNodeInstance(typeof(WolfEventNodeTest)) as WolfEventNodeTest;
+                var node4 = WolfEventEditorUtil.CreateNodeInstance(typeof(WolfEventNodeTest)) as WolfEventNodeTest;
+                node1.position = new Vector2(000, 000);
+                node2.position = new Vector2(300, 050);
+                node3.position = new Vector2(600, 100);
+                node4.position = new Vector2(900, 150);
+                node1.targetEvent[0] = 1;
+                node2.targetEvent[0] = 2;
+                node3.targetEvent[0] = 3;
+                node2.test.inputSideConnection = new ConnectionInfo() { targetNode = 0, targetSlot = 0 };
+                node4.test.inputSideConnection = new ConnectionInfo() { targetNode = 2, targetSlot = 0 };
+                node1.test.value = "A";
+                node2.test.value = "B";
+                node3.test.value = "C";
+                node4.test.value = "D";
                 data.wolfEvents.Add(node1);
                 data.wolfEvents.Add(node2);
                 data.wolfEvents.Add(node3);
                 data.wolfEvents.Add(node4);
                 targ.wolfEvent = data;
+
+                AssetDatabase.SaveAssets();
                 EditorUtility.SetDirty(targ);
             }
-
 
             if (GUILayout.Button("Open Editor Window", GUILayout.Height(29)))
             {
@@ -107,12 +104,13 @@ namespace Wolf
             {
                 foreach (var item in targ.wolfEvent.wolfEvents)
                 {
-                    Debug.Log($"event node - {item} - {item.targetEvent}");
-                    foreach (var f in item.values)
-                    {
-                        Debug.Log($"\t{f.GetThisValue()}");
-                    }
+                    Debug.Log($"event node - {item} - {item.GetValue(0)}");
                 }
+            }
+
+            if (GUILayout.Button("Debug InvokeFrom0", GUILayout.Height(29)))
+            {
+                targ.InvokeFrom0();
             }
 
             serializedObject.ApplyModifiedProperties();

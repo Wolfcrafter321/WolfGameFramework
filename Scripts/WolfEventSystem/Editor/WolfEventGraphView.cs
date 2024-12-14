@@ -126,21 +126,18 @@ namespace Wolf
             //create nodes
             foreach (var wolfEvent in data.wolfEvents)
             {
-                var n = WolfEventEditorUtil.CreateUIElementNode(wolfEvent);
+                var n = WolfEventEditorUtil.CreateUIElementNode(wolfEvent.GetType());
                 n.SetData(wolfEvent);
                 n.nodeName = wolfEvent.name;
                 AddElement(n);
                 nodes.Add(n);
             }
+            // LookUp Connectivities
             for (var i = 0; i < data.wolfEvents.Count; i++)
             {
                 var wolfEvent = data.wolfEvents[i];
-                if (wolfEvent.targetEvent != -1)
-                    connectInfos.Add(new Node[2] { nodes[i], nodes[wolfEvent.targetEvent] });
-                foreach(var cVar in wolfEvent.values)
-                {
-                    var input = cVar.GetInputConnectionInfo();
-                }
+                if (wolfEvent.targetEvent[0] != -1)
+                    connectInfos.Add(new Node[2] { nodes[i], nodes[wolfEvent.targetEvent[0]] });
             }
              
             //connect nodes
@@ -163,33 +160,47 @@ namespace Wolf
                 allNodeIDDict.Add(allNodes[i] as WolfEventGraphEditorNode, i);
             }
 
-            for (var i = 0; i < allNodes.Count; i++)
+            foreach (WolfEventGraphEditorNode node in nodes)
             {
-                var node = allNodes[i] as WolfEventGraphEditorNode;
                 var typ = Type.GetType(node.typeName);
                 //Debug.Log(typ); // WolfEventNodeBase , Teste, Wait ....
-
                 var newData = ScriptableObject.CreateInstance(typ) as WolfEventNodeBase;
                 newData.name = node.nodeName != null? node.nodeName : Guid.NewGuid().ToString();
                 newData.position = node.GetPosition().position;
-                
-                
+                newData.InitFields(newData);
+
+                // save fields
+                Dictionary<string, object> fieldData = new Dictionary<string, object>();
+                foreach (WolfEventGraphEditorConnectableFieldWrapper item in node.fieldContainer.Children())
+                {
+                    fieldData.Add(item.fieldName, item.GetData());
+                    Debug.Log(item.fieldName);
+                }
+                var cFields = typ.GetFields(BindingFlags.Instance | BindingFlags.Public)
+                        .Where(type => type.ToString().Contains("Wolf.ConnectableVariable"));
+                foreach (var f in cFields)
+                {
+                    var insf = ScriptableObject.CreateInstance(f.FieldType);    // ConnectableField
+                    f.SetValue(newData, insf);
+                    insf.GetType().GetField("value").SetValue(insf, fieldData[f.Name]);
+                }
+
                 // main Connection
                 if (node.Q<Port>("Out") != null && node.Q<Port>("Out").connected)
                 {
                     foreach (var e in node.Q<Port>("Out").connections)
                     {
                         var targNode = e.input.node as WolfEventGraphEditorNode;
-                        newData.targetEvent = allNodeIDDict[targNode];
+                        newData.targetEvent = new int[1] { allNodeIDDict[targNode] };
                     }
                 }
-                // fields connections
-                var fields = node.fieldContainer.Children().ToArray();
-                for (int j = 0; j < fields.Length; j++)
-                {
-                    var field = fields[j] as WolfEventGraphEditorConnectableFieldWrapper;
-                    newData.values[j].SetValue(field.GetData());
-                }
+                //// fields connections
+                //var fields = node.fieldContainer.Children().ToArray();
+                //for (int j = 0; j < fields.Length; j++)
+                //{
+                //    var field = fields[j] as WolfEventGraphEditorConnectableFieldWrapper;
+                //    newData.values[j].SetValue(field.GetData());
+                //}
 
 
                 targ.wolfEvents.Add(newData);
