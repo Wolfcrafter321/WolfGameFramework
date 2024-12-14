@@ -1,11 +1,10 @@
+#if UNITY_EDITOR
 using System;
 using System.Reflection;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Codice.CM.WorkspaceServer.DataStore;
 
-#if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
 using UnityEditor.Experimental;

@@ -5,8 +5,6 @@ using UnityEngine;
 using Wolf;
 using WolfEventNode;
 
-
-
 #if UNITY_EDITOR
 using UnityEditor;
 using UnityEngine.UIElements;
