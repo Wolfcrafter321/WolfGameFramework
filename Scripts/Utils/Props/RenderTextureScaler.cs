@@ -6,12 +6,19 @@ public class RenderTextureScaler : MonoBehaviour
     public RenderTexture tex;
 
     [Header("Scale"), Range(0.1f, 1f)]
-    public float scale = 1.0f;  // ?????_?[?e?N?X?`????X?P?[?? (10% - 100%)
+    public float scale = 1.0f;  // (10% - 100%)
 
     [Header("Camera")]
     public bool refreshCamera;
     public Camera rtCam;
 
+    [Header("Debug?")]
+    public bool debug;
+
+    private void Start()
+    {
+        if (refreshCamera) UpdateRenderTexture();
+    }
 
     private void UpdateRenderTexture()
     {
@@ -27,16 +34,16 @@ public class RenderTextureScaler : MonoBehaviour
 
     private void OnGUI()
     {
-        // ?X???C?_?[??????? (10% - 100%)
-        scale = GUI.HorizontalSlider(new Rect(20, 20, 300, 40), scale, 0.1f, 1.0f);
-
-        // ?X???C?_?[??l??\??
-        GUI.Label(new Rect(400, 400, 300, 60), $"Scale: {Mathf.RoundToInt(scale * 100)}%");
-
-        // ?????_?[?e?N?X?`????X?V
-        if (GUI.changed)
+        if (debug)
         {
-            UpdateRenderTexture();
+            scale = GUI.HorizontalSlider(new Rect(250, 20, 300, 80), scale, 0.1f, 1.0f);
+
+            GUI.Label(new Rect(250, 20, 300, 80), $"Scale: {Mathf.RoundToInt(scale * 100)}%");
+
+            if (GUI.changed)
+            {
+                UpdateRenderTexture();
+            }
         }
     }
 }
