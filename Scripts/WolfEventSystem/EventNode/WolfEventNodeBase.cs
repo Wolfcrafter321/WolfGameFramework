@@ -74,11 +74,24 @@ namespace Wolf
     }
 
 
-    [AttributeUsage(AttributeTargets.Class)] public class NodeSearchPathAttribute : Attribute{
-        public string Path { get; } public NodeSearchPathAttribute(string path) { Path = path; } }
+    [AttributeUsage(AttributeTargets.Class)]
+    public class NodeSearchPathAttribute : Attribute
+    {
+        public string Path { get; }
+        public NodeSearchPathAttribute(string path) { Path = path; }
+    }
 
     [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class WolfEventNodeAttribute : Attribute { }
     [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class WolfEventFunctionNodeAttribute : Attribute { }
     [AttributeUsage(AttributeTargets.Class, Inherited = true)] public class WolfEventVariableNodeAttribute : Attribute { }
 
+    [AttributeUsage(AttributeTargets.Field)]
+    public class ConnectableFieldAttribute : Attribute
+    {
+        public bool NoInput { get; }
+        public bool NoOutput { get; }
+        public bool NoField { get; }
+        public ConnectableFieldAttribute(bool noInput = false, bool noOutput = false, bool noField = false)
+        { NoInput = noInput; NoOutput = noOutput; NoField = noField; }
+    }
 }
