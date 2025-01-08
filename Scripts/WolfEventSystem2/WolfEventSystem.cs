@@ -19,7 +19,7 @@ namespace WolfEventSystem2
         private WolfEventSystem2 targ;
 
         public override void OnInspectorGUI()
-        {s
+        {
             targ = this.target as WolfEventSystem2;
 
             base.OnInspectorGUI();
